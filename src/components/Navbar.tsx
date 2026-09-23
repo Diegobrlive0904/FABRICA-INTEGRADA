@@ -1,0 +1,177 @@
+import React from 'react';
+import {
+  Layers,
+  LayoutDashboard,
+  ShoppingCart,
+  Users,
+  DollarSign,
+  Truck,
+  Bell,
+  Cpu,
+  ShieldCheck,
+  Search,
+  ExternalLink,
+  Boxes,
+  Building2,
+  Save,
+} from 'lucide-react';
+import { DashboardMetrics } from '../types';
+
+export type NavTab =
+  | 'dashboard'
+  | 'orders'
+  | 'inventory'
+  | 'suppliers'
+  | 'customers'
+  | 'financial'
+  | 'logistics'
+  | 'alerts'
+  | 'integrations'
+  | 'audit';
+
+interface NavbarProps {
+  currentTab: NavTab;
+  onSelectTab: (tab: NavTab) => void;
+  metrics: DashboardMetrics | null;
+  onOpenTraceSearch: () => void;
+  onOpenSaveBackup?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({
+  currentTab,
+  onSelectTab,
+  metrics,
+  onOpenTraceSearch,
+  onOpenSaveBackup,
+}) => {
+  const pendingAlerts = metrics?.alerts.totalPending || 0;
+  const criticalAlerts = metrics?.alerts.criticalCount || 0;
+  const overdueCount = metrics?.financial.overdueCount || 0;
+  const lowStockCount = (metrics?.inventory?.lowStockCount || 0) + (metrics?.inventory?.criticalStockCount || 0);
+  const openPoCount = metrics?.suppliers?.openPurchaseOrders || 0;
+
+  const navItems: { id: NavTab; label: string; icon: React.ReactNode; badge?: number; badgeColor?: string }[] = [
+    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
+    {
+      id: 'orders',
+      label: 'Pedidos',
+      icon: <ShoppingCart className="w-4 h-4" />,
+      badge: metrics?.orders.delayed,
+      badgeColor: 'bg-rose-500 text-white',
+    },
+    {
+      id: 'inventory',
+      label: 'Estoque & Volumes',
+      icon: <Boxes className="w-4 h-4" />,
+      badge: lowStockCount > 0 ? lowStockCount : undefined,
+      badgeColor: (metrics?.inventory?.criticalStockCount || 0) > 0 ? 'bg-red-600 text-white' : 'bg-amber-500 text-white',
+    },
+    {
+      id: 'suppliers',
+      label: 'Fornecedores & P.O.',
+      icon: <Building2 className="w-4 h-4" />,
+      badge: openPoCount > 0 ? openPoCount : undefined,
+      badgeColor: 'bg-indigo-600 text-white',
+    },
+    { id: 'customers', label: 'Clientes', icon: <Users className="w-4 h-4" /> },
+    {
+      id: 'financial',
+      label: 'Financeiro',
+      icon: <DollarSign className="w-4 h-4" />,
+      badge: overdueCount > 0 ? overdueCount : undefined,
+      badgeColor: 'bg-amber-500 text-white',
+    },
+    { id: 'logistics', label: 'Expedição', icon: <Truck className="w-4 h-4" /> },
+    {
+      id: 'alerts',
+      label: 'Alertas',
+      icon: <Bell className="w-4 h-4" />,
+      badge: pendingAlerts > 0 ? pendingAlerts : undefined,
+      badgeColor: criticalAlerts > 0 ? 'bg-red-600 text-white' : 'bg-amber-500 text-white',
+    },
+    { id: 'integrations', label: 'Integrações', icon: <Cpu className="w-4 h-4" /> },
+    { id: 'audit', label: 'Auditoria', icon: <ShieldCheck className="w-4 h-4" /> },
+  ];
+
+  return (
+    <header className="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo and Brand */}
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => onSelectTab('dashboard')}>
+            <div className="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/30">
+              <Layers className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="font-semibold text-lg tracking-tight text-white">Flind</span>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                  FÁBRICA INTEGRADA
+                </span>
+              </div>
+              <p className="text-xs text-slate-400">Tray E-commerce, SINK ERP & Rastreabilidade de Pedidos</p>
+            </div>
+          </div>
+
+          {/* Quick Trace Search & Status Badges */}
+          <div className="flex items-center space-x-2.5">
+            <button
+              onClick={onOpenSaveBackup}
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 text-xs font-semibold transition-colors"
+              title="Salvar alterações, baixar backup JSON ou forçar gravação no disco"
+            >
+              <Save className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Salvar & Backup</span>
+            </button>
+
+            <button
+              onClick={onOpenTraceSearch}
+              className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors"
+              title="Consultar Rastreabilidade Pública por Token"
+            >
+              <Search className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Consultar Rastreio (/trace)</span>
+            </button>
+
+            <div className="hidden md:flex items-center space-x-2 border-l border-slate-800 pl-3">
+              <div className="flex items-center space-x-1.5 text-xs text-slate-400 bg-slate-800/60 px-2.5 py-1 rounded-md">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Tray & SINK Online</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation Tabs */}
+        <div className="flex space-x-1 overflow-x-auto py-1 scrollbar-none border-t border-slate-800/80">
+          {navItems.map((item) => {
+            const isActive = currentTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onSelectTab(item.id)}
+                className={`flex items-center space-x-2 px-3.5 py-2 rounded-md text-xs font-medium whitespace-nowrap transition-all ${
+                  isActive
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+                {item.badge !== undefined && item.badge > 0 && (
+                  <span
+                    className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                      item.badgeColor || 'bg-slate-700 text-slate-200'
+                    }`}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </header>
+  );
+};

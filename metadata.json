@@ -1,0 +1,6 @@
+{
+  "name": "Flind",
+  "description": "Plataforma central de integração operacional, rastreabilidade e automação para insumos descartáveis, toalet descartável, EPIs e enxoval Flind (Tray, SINK ERP, WhatsApp, Expedição e Financeiro).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
