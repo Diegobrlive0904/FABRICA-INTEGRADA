@@ -1671,35 +1671,41 @@ apiRouter.get('/suppliers', (req: Request, res: Response) => {
 });
 
 apiRouter.post('/suppliers', (req: Request, res: Response) => {
-  const data = req.body;
-  if (!data.name || !data.taxId) {
-    return res.status(400).json({ error: 'Razão social e CNPJ do fornecedor são obrigatórios.' });
+  const data = req.body || {};
+  const name = (data.name || data.tradeName || '').trim();
+  const taxId = (data.taxId || '').trim();
+
+  if (!name) {
+    return res.status(400).json({ error: 'Razão Social ou Nome do Fornecedor é obrigatório.' });
   }
+
+  // Gera taxId padrão caso o usuário não informe CNPJ
+  const finalTaxId = taxId || `ISENTO-${Date.now().toString().slice(-8)}`;
 
   const existing = data.id ? db.getSupplierById(data.id) : undefined;
   const supplier: Supplier = {
     id: data.id || `supp-${Date.now()}`,
-    name: data.name,
-    tradeName: data.tradeName || data.name,
-    taxId: data.taxId,
-    stateRegistration: data.stateRegistration || 'Isento',
-    contactName: data.contactName || 'Responsável Comercial',
-    phone: data.phone || '',
-    whatsapp: data.whatsapp || data.phone || '',
-    email: data.email || '',
-    category: data.category || 'Insumos e Matérias-Primas',
-    leadTimeDays: Number(data.leadTimeDays) || 3,
-    city: data.city || 'São Paulo',
-    state: data.state || 'SP',
-    paymentTerms: data.paymentTerms || '30 DDL',
+    name: name,
+    tradeName: (data.tradeName || name).trim(),
+    taxId: finalTaxId,
+    stateRegistration: (data.stateRegistration || 'Isento').trim(),
+    contactName: (data.contactName || 'Responsável Comercial').trim(),
+    phone: (data.phone || data.whatsapp || '').trim(),
+    whatsapp: (data.whatsapp || data.phone || '+55 11 99999-0000').trim(),
+    email: (data.email || 'comercial@fornecedor.com.br').trim(),
+    category: (data.category || 'Insumos e Matérias-Primas').trim(),
+    leadTimeDays: Math.max(1, Number(data.leadTimeDays) || 3),
+    city: (data.city || 'São Paulo').trim(),
+    state: (data.state || 'SP').trim().toUpperCase(),
+    paymentTerms: (data.paymentTerms || '30 DDL').trim(),
     status: data.status || 'HOMOLOGATED',
-    notes: data.notes,
-    suppliedProductsCount: 0,
+    notes: data.notes || '',
+    suppliedProductsCount: existing?.suppliedProductsCount || 0,
     createdAt: existing?.createdAt || new Date().toISOString(),
   };
 
   const saved = db.upsertSupplier(supplier);
-  res.json(saved);
+  res.status(201).json(saved);
 });
 
 apiRouter.get('/purchase-orders', (req: Request, res: Response) => {
@@ -1708,6 +1714,39 @@ apiRouter.get('/purchase-orders', (req: Request, res: Response) => {
 
 apiRouter.get('/purchase-orders/cancelled', (req: Request, res: Response) => {
   res.json(db.getCancelledPurchaseOrders());
+});
+
+// Limpar lista de ordens de compras canceladas
+apiRouter.post('/purchase-orders/cancelled/clear', (req: Request, res: Response) => {
+  const count = db.clearCancelledPurchaseOrders();
+  res.json({
+    success: true,
+    clearedCount: count,
+    message: `${count} ordens de compra canceladas foram removidas com sucesso do arquivo.`,
+  });
+});
+
+apiRouter.delete('/purchase-orders/cancelled', (req: Request, res: Response) => {
+  const count = db.clearCancelledPurchaseOrders();
+  res.json({
+    success: true,
+    clearedCount: count,
+    message: `${count} ordens de compra canceladas foram removidas com sucesso do arquivo.`,
+  });
+});
+
+// Metadados das Tabelas do Banco de Dados para Vercel & GitHub
+apiRouter.get('/database/tables', (req: Request, res: Response) => {
+  res.json(db.getDatabaseTableStats());
+});
+
+apiRouter.post('/database/init', (req: Request, res: Response) => {
+  const stats = db.getDatabaseTableStats();
+  res.json({
+    success: true,
+    message: 'Estrutura das tabelas de banco de dados verificada e sincronizada!',
+    stats,
+  });
 });
 
 // Diagnóstico Automático e Pesquisa de Produtos Faltantes

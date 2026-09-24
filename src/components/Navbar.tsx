@@ -14,6 +14,7 @@ import {
   Boxes,
   Building2,
   Save,
+  Database,
 } from 'lucide-react';
 import { DashboardMetrics } from '../types';
 
@@ -35,6 +36,7 @@ interface NavbarProps {
   metrics: DashboardMetrics | null;
   onOpenTraceSearch: () => void;
   onOpenSaveBackup?: () => void;
+  onOpenDatabaseSchema?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -43,6 +45,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   metrics,
   onOpenTraceSearch,
   onOpenSaveBackup,
+  onOpenDatabaseSchema,
 }) => {
   const pendingAlerts = metrics?.alerts.totalPending || 0;
   const criticalAlerts = metrics?.alerts.criticalCount || 0;
@@ -116,8 +119,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Quick Trace Search & Status Badges */}
           <div className="flex items-center space-x-2.5">
             <button
+              onClick={onOpenDatabaseSchema}
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 text-xs font-semibold cursor-pointer transition-colors"
+              title="Visualizar tabelas relacionais e scripts SQL para GitHub e Vercel"
+            >
+              <Database className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Tabelas & SQL</span>
+            </button>
+
+            <button
               onClick={onOpenSaveBackup}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 text-xs font-semibold transition-colors"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 text-xs font-semibold cursor-pointer transition-colors"
               title="Salvar alterações, baixar backup JSON ou forçar gravação no disco"
             >
               <Save className="w-3.5 h-3.5 text-emerald-400" />

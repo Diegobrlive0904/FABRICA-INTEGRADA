@@ -17,6 +17,7 @@ import { IntegrationsView } from './components/IntegrationsView';
 import { AuditView } from './components/AuditView';
 import { PublicTraceModal } from './components/PublicTraceModal';
 import { SaveBackupModal } from './components/SaveBackupModal';
+import { DatabaseSchemaModal } from './components/DatabaseSchemaModal';
 import { DashboardMetrics, Order } from './types';
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
   const [selectedTraceToken, setSelectedTraceToken] = useState<string | null>(null);
   const [openLabelOrderId, setOpenLabelOrderId] = useState<string | null>(null);
   const [saveBackupModalOpen, setSaveBackupModalOpen] = useState(false);
+  const [databaseModalOpen, setDatabaseModalOpen] = useState(false);
 
   // Detectar rota inicial para /trace/:token no navegador
   useEffect(() => {
@@ -93,6 +95,7 @@ export default function App() {
         metrics={metrics}
         onOpenTraceSearch={() => handleOpenTraceSearch()}
         onOpenSaveBackup={() => setSaveBackupModalOpen(true)}
+        onOpenDatabaseSchema={() => setDatabaseModalOpen(true)}
       />
 
       {/* Conteúdo Principal */}
@@ -153,6 +156,12 @@ export default function App() {
         isOpen={saveBackupModalOpen}
         onClose={() => setSaveBackupModalOpen(false)}
         onRefreshData={fetchGlobalData}
+      />
+
+      {/* Modal de Tabelas & Banco de Dados Relacional (GitHub & Vercel) */}
+      <DatabaseSchemaModal
+        isOpen={databaseModalOpen}
+        onClose={() => setDatabaseModalOpen(false)}
       />
 
       {/* Rodapé Institucional */}

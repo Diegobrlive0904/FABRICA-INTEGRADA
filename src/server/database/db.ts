@@ -17,6 +17,7 @@ import {
   ProductInventory,
   Supplier,
   PurchaseOrder,
+  OpenPoDetail,
   MissingProductItem,
   MissingProductsDiagnostic,
   SupplierQuotationOffer,
@@ -48,8 +49,44 @@ interface DatabaseSchema {
   };
 }
 
-const DATA_DIR = path.resolve(process.cwd(), 'data');
-const DB_FILE = path.join(DATA_DIR, 'fabrica_integrada_db.json');
+function getDatabaseFilePaths(): { dir: string; file: string; isReadOnlyEnv: boolean } {
+  const localDir = path.resolve(process.cwd(), 'data');
+  const localFile = path.join(localDir, 'fabrica_integrada_db.json');
+
+  // Detecta ambiente Vercel Serverless ou AWS Lambda onde o sistema de arquivos raiz é estritamente somente-leitura
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    const tmpDir = path.join('/tmp', 'data');
+    try {
+      if (!fs.existsSync(tmpDir)) {
+        fs.mkdirSync(tmpDir, { recursive: true });
+      }
+      return { dir: tmpDir, file: path.join(tmpDir, 'fabrica_integrada_db.json'), isReadOnlyEnv: true };
+    } catch {
+      return { dir: tmpDir, file: path.join(tmpDir, 'fabrica_integrada_db.json'), isReadOnlyEnv: true };
+    }
+  }
+
+  // Em desenvolvimento ou container Node.js comum, verifica se a pasta local tem permissão de escrita
+  try {
+    if (!fs.existsSync(localDir)) {
+      fs.mkdirSync(localDir, { recursive: true });
+    }
+    fs.accessSync(localDir, fs.constants.W_OK);
+    return { dir: localDir, file: localFile, isReadOnlyEnv: false };
+  } catch {
+    const tmpDir = path.join('/tmp', 'data');
+    try {
+      if (!fs.existsSync(tmpDir)) {
+        fs.mkdirSync(tmpDir, { recursive: true });
+      }
+    } catch {}
+    return { dir: tmpDir, file: path.join(tmpDir, 'fabrica_integrada_db.json'), isReadOnlyEnv: true };
+  }
+}
+
+const dbPaths = getDatabaseFilePaths();
+const DATA_DIR = dbPaths.dir;
+const DB_FILE = dbPaths.file;
 
 // Initial realistic seed data for Fábrica Integrada
 function getInitialSeed(): DatabaseSchema {
@@ -1500,6 +1537,7 @@ function getInitialSeed(): DatabaseSchema {
 class DatabaseManager {
   private data: DatabaseSchema;
   private saveTimeout: NodeJS.Timeout | null = null;
+  private cancelledCooldowns: Map<string, number> = new Map();
 
   constructor() {
     this.data = this.loadDatabase();
@@ -1511,8 +1549,19 @@ class DatabaseManager {
         fs.mkdirSync(DATA_DIR, { recursive: true });
       }
 
+      const bundledFile = path.resolve(process.cwd(), 'data', 'fabrica_integrada_db.json');
+      let fileContent = '';
+
       if (fs.existsSync(DB_FILE)) {
-        const fileContent = fs.readFileSync(DB_FILE, 'utf-8');
+        fileContent = fs.readFileSync(DB_FILE, 'utf-8');
+      } else if (fs.existsSync(bundledFile)) {
+        fileContent = fs.readFileSync(bundledFile, 'utf-8');
+        try {
+          fs.writeFileSync(DB_FILE, fileContent, 'utf-8');
+        } catch {}
+      }
+
+      if (fileContent) {
         const parsed = JSON.parse(fileContent);
         if (parsed && parsed.version) {
           const seed = getInitialSeed();
@@ -1750,7 +1799,7 @@ class DatabaseManager {
       }
       fs.writeFileSync(DB_FILE, JSON.stringify(dataToSave, null, 2), 'utf-8');
     } catch (err) {
-      console.error('[DB] Falha ao persistir dados no disco:', err);
+      console.warn('[DB] Operando com persistência em memória (ambiente serverless/somente-leitura):', err);
     }
   }
 
@@ -2589,6 +2638,11 @@ class DatabaseManager {
     }
     this.data.cancelledPurchaseOrders.unshift(po);
 
+    // Registra cooldown para não recriar automaticamente ressuprimento deste item nas próximas 24h
+    if (po.productId) {
+      this.cancelledCooldowns.set(po.productId, Date.now() + 24 * 60 * 60 * 1000);
+    }
+
     this.addAuditLog({
       id: `aud-po-cancel-${Date.now()}`,
       action: 'PURCHASE_ORDER_CANCELLED',
@@ -2609,6 +2663,30 @@ class DatabaseManager {
 
     this.persist();
     return po;
+  }
+
+  public clearCancelledPurchaseOrders(): number {
+    const count = (this.data.cancelledPurchaseOrders || []).length;
+    this.data.cancelledPurchaseOrders = [];
+    this.cancelledCooldowns.clear();
+
+    this.addAuditLog({
+      id: `aud-po-clear-cancel-${Date.now()}`,
+      action: 'CANCELLED_PURCHASE_ORDERS_CLEARED',
+      origin: 'DatabaseManager.clearCancelledPurchaseOrders',
+      entity: 'PurchaseOrder',
+      entityId: 'ALL_CANCELLED',
+      newValue: {
+        clearedCount: count,
+        message: 'Histórico de ordens de compra canceladas limpo pelo usuário.',
+      },
+      userOrService: 'Gestor de Compras e Suprimentos',
+      correlationId: `corr-po-clear-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    });
+
+    this.persist();
+    return count;
   }
 
   public updatePurchaseOrderStatus(
@@ -2694,6 +2772,12 @@ class DatabaseManager {
 
   public triggerAutoReorderForProduct(product: ProductInventory): PurchaseOrder | undefined {
     if (!product.autoReorderEnabled) return undefined;
+
+    // Respeita cancelamento manual prévio feito pelo gestor (não re-emite se cancelado recentemente)
+    const cooldown = this.cancelledCooldowns.get(product.id);
+    if (cooldown && Date.now() < cooldown) {
+      return undefined;
+    }
 
     // Verificar se já existe uma ordem de compra pendente ou enviada para este produto
     const existingPo = this.data.purchaseOrders.find(
@@ -3523,6 +3607,116 @@ class DatabaseManager {
 
     this.persist();
     return po;
+  }
+
+  // ====================================================
+  // METADADOS E ESTATÍSTICAS DAS TABELAS (GITHUB & VERCEL)
+  // ====================================================
+  public getDatabaseTableStats() {
+    const { file, isReadOnlyEnv } = getDatabaseFilePaths();
+    const tables = [
+      {
+        tableName: 'suppliers',
+        displayName: 'Fornecedores Homologados',
+        description: 'Cadastro completo de fornecedores de matérias-primas e insumos com contato WhatsApp.',
+        recordCount: this.data.suppliers.length,
+        primaryKey: 'id',
+        columnsCount: 17,
+        columns: ['id', 'name', 'trade_name', 'tax_id', 'state_registration', 'whatsapp', 'email', 'category', 'lead_time_days', 'city', 'state', 'status'],
+      },
+      {
+        tableName: 'products',
+        displayName: 'Produtos & Catálogo Técnico',
+        description: 'Estoque físico em caixas/unidades, ponto de ressuprimento, lotes e fichas técnicas Flind.',
+        recordCount: this.data.products.length,
+        primaryKey: 'id',
+        columnsCount: 28,
+        columns: ['id', 'sku', 'name', 'category', 'packaging_unit', 'units_per_package', 'current_stock_packages', 'min_stock_packages', 'cost_price', 'status'],
+      },
+      {
+        tableName: 'orders',
+        displayName: 'Pedidos de Venda',
+        description: 'Ordens de venda integradas do ERP/E-commerce, valores, prazos e esteira de expedição.',
+        recordCount: this.data.orders.length,
+        primaryKey: 'id',
+        columnsCount: 16,
+        columns: ['id', 'order_number', 'customer_id', 'origin', 'status', 'total_amount', 'packages_count', 'sla_status'],
+      },
+      {
+        tableName: 'purchase_orders',
+        displayName: 'Ordens de Compra Ativas',
+        description: 'Ordens de compra emitidas para reposição de matéria-prima junto aos fornecedores.',
+        recordCount: this.data.purchaseOrders.filter((p) => p.status !== 'CANCELLED').length,
+        primaryKey: 'id',
+        columnsCount: 15,
+        columns: ['id', 'order_number', 'supplier_id', 'product_id', 'quantity_packages', 'estimated_cost', 'status'],
+      },
+      {
+        tableName: 'cancelled_purchase_orders',
+        displayName: 'Histórico de Compras Canceladas',
+        description: 'Arquivo isolado de ordens de reposição canceladas para não poluir a listagem ativa.',
+        recordCount: (this.data.cancelledPurchaseOrders || []).length,
+        primaryKey: 'id',
+        columnsCount: 14,
+        columns: ['id', 'order_number', 'supplier_name', 'product_name', 'cancel_reason', 'cancelled_at'],
+      },
+      {
+        tableName: 'customers',
+        displayName: 'Clientes & Contas B2B',
+        description: 'Rede hospitalar, clínicas de estética, salões de beleza e contas e-commerce Flind.',
+        recordCount: this.data.customers.length,
+        primaryKey: 'id',
+        columnsCount: 14,
+        columns: ['id', 'name', 'trade_name', 'tax_id', 'email', 'phone', 'flind_origin', 'segment'],
+      },
+      {
+        tableName: 'receivables',
+        displayName: 'Contas a Receber & Baixa Automática',
+        description: 'Títulos financeiros, vencimentos, conciliação e baixas automáticas de pagamentos.',
+        recordCount: this.data.receivables.length,
+        primaryKey: 'id',
+        columnsCount: 14,
+        columns: ['id', 'order_id', 'customer_name', 'document_number', 'due_date', 'amount', 'status'],
+      },
+      {
+        tableName: 'delivery_rules',
+        displayName: 'Regras de Entrega Operacionais',
+        description: 'Janelas horárias de recebimento, agendamento de docas e restrições de veículos (VUC/Carreta).',
+        recordCount: this.data.deliveryRules.length,
+        primaryKey: 'id',
+        columnsCount: 13,
+        columns: ['id', 'customer_id', 'allowed_time_start', 'allowed_time_end', 'vehicle_type_allowed', 'requires_scheduling'],
+      },
+      {
+        tableName: 'alerts',
+        displayName: 'Alertas Operacionais & SLA',
+        description: 'Incidentes de separação, atrasos de fornecedor e riscos de estoque.',
+        recordCount: this.data.alerts.length,
+        primaryKey: 'id',
+        columnsCount: 9,
+        columns: ['id', 'type', 'message', 'severity', 'status', 'responsible'],
+      },
+      {
+        tableName: 'audit_logs',
+        displayName: 'Trilha de Auditoria & Compliance',
+        description: 'Registro cronológico imutável de todas as ações no sistema (compras, cancelamentos, baixas).',
+        recordCount: this.data.auditLogs.length,
+        primaryKey: 'id',
+        columnsCount: 8,
+        columns: ['id', 'action', 'entity', 'entity_id', 'user_or_service', 'created_at'],
+      },
+    ];
+
+    return {
+      success: true,
+      timestamp: new Date().toISOString(),
+      environment: process.env.VERCEL ? 'Vercel Serverless' : 'Node.js Runtime',
+      storageEngine: isReadOnlyEnv ? 'In-Memory State + /tmp Persistent Mirror' : 'JSON Persistent Engine / Data Dir',
+      storagePath: file,
+      tablesCount: tables.length,
+      totalRecords: tables.reduce((acc, t) => acc + t.recordCount, 0),
+      tables,
+    };
   }
 }
 
