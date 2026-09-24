@@ -103,4 +103,52 @@ describe('TESTES DE IMPORTAÇÃO AUTOMÁTICA DE ESTOQUE E VOLUMES VIA XLSX', () 
     assert.strictEqual(reloaded.currentStockPackages, newPackages);
     assert.strictEqual(reloaded.currentStockUnits, expectedUnits);
   });
+
+  test('Parser XLSX: Deve reconhecer planilha de ERP com linhas de título antes dos cabeçalhos', () => {
+    const wb = XLSX.utils.book_new();
+    const rowsWithTitleHeader = [
+      ['RELATÓRIO DE POSIÇÃO DE ESTOQUE - FLIND INDÚSTRIA'],
+      ['Emitido em: 24/09/2026 14:00 - Usuário: Almoxarife'],
+      [''], // linha em branco
+      ['Código', 'Descrição do Produto', 'Unidade', 'Saldo Atual', 'Estoque Mínimo', 'Preço de Custo'],
+      ['FLIND-ERP-01', 'Touca Descartável Sanfonada Branca', 'Caixa (CX)', '120', '30', '45,90'],
+      ['FLIND-ERP-02', 'Propé Descartável TNT Antiderrapante', 'Pacote (PCT)', '85', '20', '28,50'],
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(rowsWithTitleHeader);
+    XLSX.utils.book_append_sheet(wb, ws, 'RelatorioEstoque');
+
+    const result = parseExcelWorkbook(wb);
+    assert.strictEqual(result.success, true, 'Deve encontrar produtos mesmo com títulos nas primeiras linhas');
+    assert.strictEqual(result.rows.length, 2);
+
+    const item1 = result.rows.find((r) => r.sku === 'FLIND-ERP-01');
+    assert.ok(item1);
+    assert.strictEqual(item1.name, 'Touca Descartável Sanfonada Branca');
+    assert.strictEqual(item1.currentStockPackages, 120);
+    assert.strictEqual(item1.minStockPackages, 30);
+    assert.strictEqual(item1.costPrice, 45.9);
+  });
+
+  test('Parser XLSX: Deve aceitar coluna genérica "Saldo" e auto-gerar SKU quando apenas "Produto" for informado', () => {
+    const wb = XLSX.utils.book_new();
+    const simpleSheet = [
+      ['Produto', 'Saldo', 'Custo'],
+      ['Luva Látex Procedimento Tamanho M', '50', '85.00'],
+      ['Avental Descartável Manga Longa', '200', '12.50'],
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(simpleSheet);
+    XLSX.utils.book_append_sheet(wb, ws, 'Dados');
+
+    const result = parseExcelWorkbook(wb);
+    assert.strictEqual(result.success, true);
+    assert.strictEqual(result.rows.length, 2);
+
+    const item1 = result.rows[0];
+    assert.ok(item1.sku.startsWith('FLIND-'), 'Deve auto-gerar SKU quando não informado na planilha');
+    assert.strictEqual(item1.name, 'Luva Látex Procedimento Tamanho M');
+    assert.strictEqual(item1.currentStockPackages, 50);
+    assert.strictEqual(item1.costPrice, 85);
+  });
 });

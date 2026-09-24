@@ -10,8 +10,9 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // JSON Body Parser
-  app.use(express.json());
+  // JSON Body Parser com limite expandido para planilhas e backups grandes
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
   // Rotas de API
   app.use('/api', apiRouter);

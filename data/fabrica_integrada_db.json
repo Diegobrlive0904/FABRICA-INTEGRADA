@@ -300,7 +300,7 @@
       "createdAt": "2026-09-23T18:19:46.904Z"
     },
     {
-      "id": "addr-del-cust-1-mufmu5y9",
+      "id": "addr-del-cust-1-mufq683b",
       "customerId": "cust-1",
       "type": "DELIVERY",
       "street": "Av. Paulista",
@@ -312,7 +312,7 @@
       "zipCode": "01310-200",
       "country": "Brasil",
       "isDefault": true,
-      "createdAt": "2026-09-24T14:33:51.777Z"
+      "createdAt": "2026-09-24T16:07:13.271Z"
     }
   ],
   "deliveryRules": [
@@ -403,7 +403,7 @@
       "invoiceKey": "35260914285932000144550010000048211987654321",
       "trackingToken": "trc_1582_a8f9c10e",
       "createdAt": "2026-09-22T01:00:00.000Z",
-      "updatedAt": "2026-09-24T14:33:51.780Z",
+      "updatedAt": "2026-09-24T16:07:13.274Z",
       "items": [
         {
           "id": "item-1",
@@ -495,7 +495,7 @@
           "status": "DELAYED",
           "startedAt": "2026-09-23T13:55:51.351Z",
           "completedAt": "2026-09-22T08:36:00.000Z",
-          "durationMinutes": 1478,
+          "durationMinutes": 1571,
           "expectedSlaMinutes": 15,
           "responsible": "Operador Fábrica",
           "sourceSystem": "SINK_ERP",
@@ -512,7 +512,7 @@
           "responsible": "Equipe Expedição Doca 2",
           "sourceSystem": "FABRICA_INTEGRADA",
           "notes": "Aguardando conferência de volumes e impressão de etiqueta QR Code.",
-          "durationMinutes": 3237
+          "durationMinutes": 3331
         },
         {
           "id": "tl-7",
@@ -617,7 +617,7 @@
             "createdAt": "2026-09-23T18:19:46.904Z"
           },
           {
-            "id": "addr-del-cust-1-mufmu5y9",
+            "id": "addr-del-cust-1-mufq683b",
             "customerId": "cust-1",
             "type": "DELIVERY",
             "street": "Av. Paulista",
@@ -629,7 +629,7 @@
             "zipCode": "01310-200",
             "country": "Brasil",
             "isDefault": true,
-            "createdAt": "2026-09-24T14:33:51.777Z"
+            "createdAt": "2026-09-24T16:07:13.271Z"
           }
         ],
         "notes": "Cliente Direto da Fábrica (B2B / Sem Site) - Atendimento via Televendas, Representante ou Contrato Fabril."
@@ -668,7 +668,7 @@
       "invoiceKey": "35260908921344000219550010000048221876543210",
       "trackingToken": "trc_1583_b7d2f4a1",
       "createdAt": "2026-09-21T16:00:00.000Z",
-      "updatedAt": "2026-09-24T14:33:51.780Z",
+      "updatedAt": "2026-09-24T16:07:13.274Z",
       "items": [
         {
           "id": "item-3",
@@ -756,7 +756,7 @@
           "stageLabel": "Expedição & Etiquetagem",
           "status": "DELAYED",
           "startedAt": "2026-09-21T22:12:00.000Z",
-          "durationMinutes": 3861,
+          "durationMinutes": 3955,
           "expectedSlaMinutes": 480,
           "responsible": "Doca de Carga 1",
           "sourceSystem": "FABRICA_INTEGRADA",
@@ -865,7 +865,7 @@
       "paymentMethod": "PIX_AVISTA",
       "paymentStatus": "PAID",
       "createdAt": "2026-09-22T09:54:00.000Z",
-      "updatedAt": "2026-09-24T14:33:51.781Z",
+      "updatedAt": "2026-09-24T16:07:13.275Z",
       "items": [
         {
           "id": "item-4",
@@ -906,7 +906,7 @@
           "responsible": "SINK ERP Queue Worker",
           "sourceSystem": "SINK_ERP",
           "notes": "Fila de sincronização com SINK ERP aguardando handshake.",
-          "durationMinutes": 3158
+          "durationMinutes": 3252
         },
         {
           "id": "tl-21",
@@ -1046,7 +1046,7 @@
             "createdAt": "2026-09-23T18:19:46.904Z"
           },
           {
-            "id": "addr-del-cust-1-mufmu5y9",
+            "id": "addr-del-cust-1-mufq683b",
             "customerId": "cust-1",
             "type": "DELIVERY",
             "street": "Av. Paulista",
@@ -1058,7 +1058,7 @@
             "zipCode": "01310-200",
             "country": "Brasil",
             "isDefault": true,
-            "createdAt": "2026-09-24T14:33:51.777Z"
+            "createdAt": "2026-09-24T16:07:13.271Z"
           }
         ],
         "notes": "Cliente Direto da Fábrica (B2B / Sem Site) - Atendimento via Televendas, Representante ou Contrato Fabril."
@@ -1132,7 +1132,7 @@
           "responsible": "SINK ERP Queue Worker",
           "sourceSystem": "SINK_ERP",
           "notes": "Encaminhado para a fila de sincronização com o SINK ERP.",
-          "durationMinutes": 2713
+          "durationMinutes": 2806
         },
         {
           "id": "tl-tray-TEST-ORD-1790097625599-3",
@@ -1199,7 +1199,7 @@
         }
       ],
       "createdAt": "2026-09-22T17:20:25.601Z",
-      "updatedAt": "2026-09-24T14:33:51.781Z",
+      "updatedAt": "2026-09-24T16:07:13.275Z",
       "customer": {
         "id": "cust-tray-994",
         "externalId": "TRAY-994",
@@ -1328,7 +1328,7 @@
           "responsible": "SINK ERP Queue Worker",
           "sourceSystem": "SINK_ERP",
           "notes": "Encaminhado para a fila de sincronização com o SINK ERP.",
-          "durationMinutes": 2648
+          "durationMinutes": 2741
         },
         {
           "id": "tl-tray-TEST-ORD-1790101541968-3",
@@ -1395,7 +1395,7 @@
         }
       ],
       "createdAt": "2026-09-22T18:25:41.972Z",
-      "updatedAt": "2026-09-24T14:33:51.781Z",
+      "updatedAt": "2026-09-24T16:07:13.275Z",
       "customer": {
         "id": "cust-tray-994",
         "externalId": "TRAY-994",
@@ -1535,7 +1535,7 @@
           "responsible": "SINK ERP Queue Worker",
           "sourceSystem": "SINK_ERP",
           "notes": "Encaminhado para a fila de sincronização com o SINK ERP.",
-          "durationMinutes": 1214
+          "durationMinutes": 1307
         },
         {
           "id": "tl-tray-TEST-ORD-1790187586902-3",
@@ -1602,7 +1602,7 @@
         }
       ],
       "createdAt": "2026-09-23T18:19:46.904Z",
-      "updatedAt": "2026-09-24T14:33:51.781Z",
+      "updatedAt": "2026-09-24T16:07:13.275Z",
       "customer": {
         "id": "cust-1",
         "externalId": "TRAY-CUST-881",
@@ -1677,7 +1677,7 @@
             "createdAt": "2026-09-23T18:19:46.904Z"
           },
           {
-            "id": "addr-del-cust-1-mufmu5y9",
+            "id": "addr-del-cust-1-mufq683b",
             "customerId": "cust-1",
             "type": "DELIVERY",
             "street": "Av. Paulista",
@@ -1689,7 +1689,7 @@
             "zipCode": "01310-200",
             "country": "Brasil",
             "isDefault": true,
-            "createdAt": "2026-09-24T14:33:51.777Z"
+            "createdAt": "2026-09-24T16:07:13.271Z"
           }
         ],
         "notes": "Cliente Direto da Fábrica (B2B / Sem Site) - Atendimento via Televendas, Representante ou Contrato Fabril."
@@ -1711,12 +1711,12 @@
       }
     },
     {
-      "id": "ord-tray-TEST-ORD-1790260431774",
-      "orderNumber": "#TEST-ORD-1790260431774",
-      "externalId": "TRAY-ORD-TEST-ORD-1790260431774",
+      "id": "ord-tray-TEST-ORD-1790266033269",
+      "orderNumber": "#TEST-ORD-1790266033269",
+      "externalId": "TRAY-ORD-TEST-ORD-1790266033269",
       "source": "TRAY",
       "customerId": "cust-1",
-      "deliveryAddressId": "addr-del-cust-1-mufmu5y9",
+      "deliveryAddressId": "addr-del-cust-1-mufq683b",
       "status": "NEW",
       "totalAmount": 7850,
       "subtotal": 7500,
@@ -1726,8 +1726,8 @@
       "paymentStatus": "PAID",
       "items": [
         {
-          "id": "item-TEST-ORD-1790260431774-1",
-          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "id": "item-TEST-ORD-1790266033269-1",
+          "orderId": "ord-tray-TEST-ORD-1790266033269",
           "productId": "8820",
           "sku": "FLIND-TOALET-CX6",
           "title": "Saco de Urina, Vômito, Enjoo - Caixa com 6 Toalet Descartável Flind",
@@ -1737,8 +1737,8 @@
           "weightKg": 12
         },
         {
-          "id": "item-TEST-ORD-1790260431774-2",
-          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "id": "item-TEST-ORD-1790266033269-2",
+          "orderId": "ord-tray-TEST-ORD-1790266033269",
           "productId": "8821",
           "sku": "FLIND-MSC-TRIP-MEDIX",
           "title": "Máscara Tripla Descartável Medix - Cx c/ 50 un",
@@ -1750,13 +1750,13 @@
       ],
       "timeline": [
         {
-          "id": "tl-tray-TEST-ORD-1790260431774-1",
-          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "id": "tl-tray-TEST-ORD-1790266033269-1",
+          "orderId": "ord-tray-TEST-ORD-1790266033269",
           "stage": "ORDER_RECEIVED",
           "stageLabel": "Pedido Recebido",
           "status": "COMPLETED",
-          "startedAt": "2026-09-24T14:33:51.777Z",
-          "completedAt": "2026-09-24T14:33:51.777Z",
+          "startedAt": "2026-09-24T16:07:13.271Z",
+          "completedAt": "2026-09-24T16:07:13.271Z",
           "durationMinutes": 1,
           "expectedSlaMinutes": 10,
           "responsible": "Tray Webhook Sync",
@@ -1764,20 +1764,20 @@
           "notes": "Importado da Tray E-commerce via webhook (order.created). Total: R$ 7850."
         },
         {
-          "id": "tl-tray-TEST-ORD-1790260431774-2",
-          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "id": "tl-tray-TEST-ORD-1790266033269-2",
+          "orderId": "ord-tray-TEST-ORD-1790266033269",
           "stage": "ERP_INTEGRATED",
           "stageLabel": "Integrado ao ERP",
           "status": "IN_PROGRESS",
-          "startedAt": "2026-09-24T14:33:51.777Z",
+          "startedAt": "2026-09-24T16:07:13.271Z",
           "expectedSlaMinutes": 30,
           "responsible": "SINK ERP Queue Worker",
           "sourceSystem": "SINK_ERP",
           "notes": "Encaminhado para a fila de sincronização com o SINK ERP."
         },
         {
-          "id": "tl-tray-TEST-ORD-1790260431774-3",
-          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "id": "tl-tray-TEST-ORD-1790266033269-3",
+          "orderId": "ord-tray-TEST-ORD-1790266033269",
           "stage": "SEPARATION",
           "stageLabel": "Separação",
           "status": "PENDING",
@@ -1785,8 +1785,8 @@
           "sourceSystem": "FABRICA_INTEGRADA"
         },
         {
-          "id": "tl-tray-TEST-ORD-1790260431774-4",
-          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "id": "tl-tray-TEST-ORD-1790266033269-4",
+          "orderId": "ord-tray-TEST-ORD-1790266033269",
           "stage": "INVOICING",
           "stageLabel": "Faturamento",
           "status": "PENDING",
@@ -1794,8 +1794,8 @@
           "sourceSystem": "SINK_ERP"
         },
         {
-          "id": "tl-tray-TEST-ORD-1790260431774-5",
-          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "id": "tl-tray-TEST-ORD-1790266033269-5",
+          "orderId": "ord-tray-TEST-ORD-1790266033269",
           "stage": "NFE_ISSUED",
           "stageLabel": "NF-e Emitida",
           "status": "PENDING",
@@ -1803,8 +1803,8 @@
           "sourceSystem": "SINK_ERP"
         },
         {
-          "id": "tl-tray-TEST-ORD-1790260431774-6",
-          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "id": "tl-tray-TEST-ORD-1790266033269-6",
+          "orderId": "ord-tray-TEST-ORD-1790266033269",
           "stage": "EXPEDITION",
           "stageLabel": "Expedição & Etiquetagem",
           "status": "PENDING",
@@ -1812,8 +1812,8 @@
           "sourceSystem": "FABRICA_INTEGRADA"
         },
         {
-          "id": "tl-tray-TEST-ORD-1790260431774-7",
-          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "id": "tl-tray-TEST-ORD-1790266033269-7",
+          "orderId": "ord-tray-TEST-ORD-1790266033269",
           "stage": "CARRIER_DISPATCH",
           "stageLabel": "Coleta Transportadora",
           "status": "PENDING",
@@ -1821,8 +1821,8 @@
           "sourceSystem": "TRANSPORTADORA"
         },
         {
-          "id": "tl-tray-TEST-ORD-1790260431774-8",
-          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "id": "tl-tray-TEST-ORD-1790266033269-8",
+          "orderId": "ord-tray-TEST-ORD-1790266033269",
           "stage": "IN_TRANSIT",
           "stageLabel": "Em Trânsito",
           "status": "PENDING",
@@ -1830,8 +1830,8 @@
           "sourceSystem": "TRANSPORTADORA"
         },
         {
-          "id": "tl-tray-TEST-ORD-1790260431774-9",
-          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "id": "tl-tray-TEST-ORD-1790266033269-9",
+          "orderId": "ord-tray-TEST-ORD-1790266033269",
           "stage": "DELIVERED",
           "stageLabel": "Entregue ao Cliente",
           "status": "PENDING",
@@ -1839,8 +1839,8 @@
           "sourceSystem": "TRANSPORTADORA"
         }
       ],
-      "createdAt": "2026-09-24T14:33:51.777Z",
-      "updatedAt": "2026-09-24T14:33:51.777Z"
+      "createdAt": "2026-09-24T16:07:13.271Z",
+      "updatedAt": "2026-09-24T16:07:13.271Z"
     }
   ],
   "slaRules": [
@@ -2081,7 +2081,7 @@
       "externalId": "SINK-DUP-10388",
       "source": "SINK_ERP",
       "createdAt": "2026-08-21",
-      "updatedAt": "2026-09-24T14:33:51.801Z",
+      "updatedAt": "2026-09-24T16:07:13.295Z",
       "autoCleared": false,
       "paymentDate": "2026-09-24"
     },
@@ -2220,13 +2220,13 @@
       "updatedAt": "2026-09-23T18:19:46.904Z"
     },
     {
-      "id": "rec-tray-TEST-ORD-1790260431774",
+      "id": "rec-tray-TEST-ORD-1790266033269",
       "customerId": "cust-1",
       "customerName": "Distribuidora Metalúrgica Aliança Ltda",
-      "orderId": "ord-tray-TEST-ORD-1790260431774",
-      "orderNumber": "#TEST-ORD-1790260431774",
-      "documentNumber": "DUP-TRAY-TEST-ORD-1790260431774",
-      "invoiceNumber": "NF-TEST-ORD-1790260431774",
+      "orderId": "ord-tray-TEST-ORD-1790266033269",
+      "orderNumber": "#TEST-ORD-1790266033269",
+      "documentNumber": "DUP-TRAY-TEST-ORD-1790266033269",
+      "invoiceNumber": "NF-TEST-ORD-1790266033269",
       "amount": 7850,
       "dueDate": "2026-09-24",
       "paymentDate": "2026-09-24",
@@ -2234,11 +2234,11 @@
       "paymentMethod": "BOLETO_BANCARIO",
       "source": "TRAY",
       "autoCleared": true,
-      "autoClearedAt": "2026-09-24T14:33:51.777Z",
+      "autoClearedAt": "2026-09-24T16:07:13.271Z",
       "clearingChannel": "TRAY",
-      "transactionCode": "TRAY-PAY-TEST-ORD-1790260431774",
-      "createdAt": "2026-09-24T14:33:51.777Z",
-      "updatedAt": "2026-09-24T14:33:51.777Z"
+      "transactionCode": "TRAY-PAY-TEST-ORD-1790266033269",
+      "createdAt": "2026-09-24T16:07:13.271Z",
+      "updatedAt": "2026-09-24T16:07:13.271Z"
     }
   ],
   "collectionRules": [
@@ -2336,7 +2336,7 @@
   ],
   "whatsappLogs": [
     {
-      "id": "wlog-1790260431869-cp0w",
+      "id": "wlog-1790266033359-rofc",
       "recipientPhone": "+55 11 98888-9999",
       "customerName": "Cliente Teste",
       "templateName": "lembrete_fatura_vencimento",
@@ -2348,12 +2348,12 @@
         "dados_pagamento": "PIX: teste@pix.com"
       },
       "status": "READ",
-      "providerMessageId": "wamid.HBgL5511988889999MRIAmufmu60t",
-      "sentAt": "2026-09-24T14:33:51.869Z",
-      "deliveredAt": "2026-09-24T14:33:53.869Z",
+      "providerMessageId": "wamid.HBgL5511988889999MRIAmufq685r",
+      "sentAt": "2026-09-24T16:07:13.358Z",
+      "deliveredAt": "2026-09-24T16:07:15.359Z",
       "direction": "OUTBOUND",
-      "createdAt": "2026-09-24T14:33:51.869Z",
-      "readAt": "2026-09-24T14:33:51.000Z"
+      "createdAt": "2026-09-24T16:07:13.358Z",
+      "readAt": "2026-09-24T16:07:13.000Z"
     },
     {
       "id": "wlog-1790257104058-wcy2",
@@ -2823,37 +2823,37 @@
   ],
   "auditLogs": [
     {
-      "id": "aud-1790260431869",
+      "id": "aud-1790266033359",
       "action": "WHATSAPP_MESSAGE_SENT",
       "origin": "WhatsAppProvider.sendTemplateMessage",
       "entity": "WhatsAppMessageLog",
-      "entityId": "wlog-1790260431869-cp0w",
+      "entityId": "wlog-1790266033359-rofc",
       "newValue": {
         "template": "lembrete_fatura_vencimento",
         "recipient": "+55 11 98888-9999",
         "isSandbox": true
       },
       "userOrService": "CollectionAutomationService",
-      "correlationId": "corr-wpp-1790260431869",
-      "createdAt": "2026-09-24T14:33:51.869Z"
+      "correlationId": "corr-wpp-1790266033359",
+      "createdAt": "2026-09-24T16:07:13.358Z"
     },
     {
-      "id": "aud-1790260431777",
+      "id": "aud-1790266033271",
       "action": "TRAY_ORDER_SYNCED",
       "origin": "TrayAdapter.handleWebhook",
       "entity": "Order",
-      "entityId": "ord-tray-TEST-ORD-1790260431774",
+      "entityId": "ord-tray-TEST-ORD-1790266033269",
       "newValue": {
-        "orderNumber": "#TEST-ORD-1790260431774",
+        "orderNumber": "#TEST-ORD-1790266033269",
         "totalAmount": 7850,
         "customer": "Distribuidora Metalúrgica Aliança Ltda"
       },
       "userOrService": "Tray Webhook Service",
       "correlationId": "corr-test-1",
-      "createdAt": "2026-09-24T14:33:51.777Z"
+      "createdAt": "2026-09-24T16:07:13.271Z"
     },
     {
-      "id": "aud-imp-1790260431274",
+      "id": "aud-imp-1790266032764",
       "action": "INVENTORY_IMPORTED_EXCEL",
       "origin": "DatabaseManager.importInventoryItems",
       "entity": "ProductInventory",
@@ -2868,8 +2868,8 @@
         "autoOrdersTriggeredCount": 0
       },
       "userOrService": "Importação Planilha XLSX",
-      "correlationId": "corr-imp-1790260431274",
-      "createdAt": "2026-09-24T14:33:51.273Z"
+      "correlationId": "corr-imp-1790266032764",
+      "createdAt": "2026-09-24T16:07:12.763Z"
     },
     {
       "id": "aud-po-clear-cancel-1790259248752",
@@ -3512,21 +3512,21 @@
   ],
   "integrationLogs": [
     {
-      "id": "intlog-1790260431777",
+      "id": "intlog-1790266033271",
       "integration": "TRAY",
       "eventType": "order.created",
-      "externalId": "TEST-ORD-1790260431774",
-      "idempotencyKey": "tray:order:TEST-ORD-1790260431774:order.created",
+      "externalId": "TEST-ORD-1790266033269",
+      "idempotencyKey": "tray:order:TEST-ORD-1790266033269:order.created",
       "status": "SUCCESS",
       "attempts": 2,
       "payloadOriginal": {
         "event": "order.created",
         "scope_id": "991",
         "act": "order_create",
-        "order_id": "TEST-ORD-1790260431774"
+        "order_id": "TEST-ORD-1790266033269"
       },
-      "createdAt": "2026-09-24T14:33:51.777Z",
-      "updatedAt": "2026-09-24T14:33:51.777Z"
+      "createdAt": "2026-09-24T16:07:13.271Z",
+      "updatedAt": "2026-09-24T16:07:13.271Z"
     },
     {
       "id": "intlog-1790187586905",
@@ -3636,7 +3636,7 @@
       "autoReorderEnabled": true,
       "lastRestockAt": "2026-09-07T10:00:00.000Z",
       "createdAt": "2026-08-03T10:00:00.000Z",
-      "updatedAt": "2026-09-24T14:33:51.273Z",
+      "updatedAt": "2026-09-24T16:07:12.763Z",
       "barcode": "7898956000101",
       "material": "TNT SMS 100% Polipropileno Tripla Camada (Spunbond-Meltblown-Spunbond)",
       "technicalSpecs": "Tecido não-tecido cirúrgico hidrorrepelente, atóxico, hipoalergênico, barreira bacteriana BFE ≥ 99%, solda ultrassônica e fechamento por tiras ajustáveis.",

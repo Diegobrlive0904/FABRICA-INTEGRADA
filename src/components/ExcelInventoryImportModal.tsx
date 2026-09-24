@@ -131,9 +131,20 @@ export const ExcelInventoryImportModal: React.FC<ExcelInventoryImportModalProps>
           }),
         });
 
-        const data = await res.json();
+        let data: any;
+        const textResponse = await res.text();
+        try {
+          data = JSON.parse(textResponse);
+        } catch {
+          throw new Error(
+            res.status === 413
+              ? 'O arquivo é muito grande para o limite do servidor.'
+              : `Erro no servidor (${res.status}): ${textResponse.slice(0, 150)}`
+          );
+        }
+
         if (!res.ok) {
-          throw new Error(data.error || 'Falha ao processar arquivo.');
+          throw new Error(data.error || data.message || 'Falha ao processar arquivo.');
         }
 
         setPreviewData(data);
@@ -154,7 +165,7 @@ export const ExcelInventoryImportModal: React.FC<ExcelInventoryImportModalProps>
   };
 
   const handleExecuteImport = async () => {
-    if (!previewData || !base64Data) return;
+    if (!previewData) return;
 
     try {
       setLoadingImport(true);
@@ -165,15 +176,27 @@ export const ExcelInventoryImportModal: React.FC<ExcelInventoryImportModalProps>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           base64: base64Data,
+          rows: previewData.rows,
           fileName: file?.name,
           mode: importMode,
           triggerAutoReorder,
         }),
       });
 
-      const result: InventoryImportResult = await res.json();
+      let result: any;
+      const textResponse = await res.text();
+      try {
+        result = JSON.parse(textResponse);
+      } catch {
+        throw new Error(
+          res.status === 413
+            ? 'O tamanho da requisição excedeu o limite do servidor.'
+            : `Erro no servidor (${res.status}): ${textResponse.slice(0, 150)}`
+        );
+      }
+
       if (!res.ok) {
-        throw new Error((result as any).error || 'Erro ao executar importação.');
+        throw new Error(result?.error || 'Erro ao executar importação.');
       }
 
       setImportResult(result);

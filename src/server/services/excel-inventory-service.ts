@@ -52,30 +52,60 @@ export function normalizeHeaderKey(header: string): string {
 }
 
 /**
- * Mapeamento inteligente de colunas comuns em planilhas de estoque e fábricas brasileiras
+ * Mapeamento inteligente de colunas comuns em planilhas de estoque e ERPs brasileiros
+ * (Bling, Tiny, Omie, Senior, TOTVS Protheus, ContaAzul, SAP, Excel padronizado, etc.)
  */
-const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isValid' | 'validationErrors' | 'status'>, string[]> = {
+export const FIELD_ALIASES: Record<
+  keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isValid' | 'validationErrors' | 'status'>,
+  string[]
+> = {
   sku: [
     'sku',
     'codigo',
     'cod',
     'codproduto',
     'codigoproduto',
+    'coddoproduto',
+    'codigodoproduto',
     'coditem',
+    'codigoitem',
+    'coddoitem',
+    'codigodoitem',
     'referencia',
     'ref',
+    'referenciadoproduto',
     'partnumber',
     'idproduto',
+    'id',
+    'material',
+    'codigomaterial',
+    'coderp',
+    'codigoerp',
+    'codigointerno',
+    'codinterno',
+    'código',
+    'cód',
+    'itemcode',
+    'productcode',
   ],
   name: [
     'nome',
     'descricao',
     'descricaoproduto',
+    'descricaodoproduto',
     'produto',
     'item',
     'titulo',
     'descricaodoitem',
     'nomedoproduto',
+    'descricaocomercial',
+    'nomecomercial',
+    'especificacao',
+    'mercadoria',
+    'detalhes',
+    'designacao',
+    'productname',
+    'description',
   ],
   category: [
     'categoria',
@@ -85,6 +115,11 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'tipo',
     'grupodeproduto',
     'familiadeproduto',
+    'grupo',
+    'familia',
+    'subgrupo',
+    'classe',
+    'category',
   ],
   packagingUnit: [
     'embalagem',
@@ -97,6 +132,13 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'unidadevolume',
     'volume',
     'unidadedemedida',
+    'unidademedida',
+    'um',
+    'medida',
+    'tipodevolume',
+    'siglaum',
+    'un',
+    'unit',
   ],
   unitsPerPackage: [
     'unidadesporvolume',
@@ -111,6 +153,12 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'fatorcaixa',
     'qtdvolume',
     'quantidadeporvolume',
+    'multiplo',
+    'unidadesporfardo',
+    'fatorentrada',
+    'embalagemfator',
+    'qtdembalagem',
+    'fatorunidades',
   ],
   currentStockPackages: [
     'estoquevolumes',
@@ -122,21 +170,47 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'currentstockpackages',
     'estoqueembalagens',
     'qtdvolumes',
+    'qtdevolumes',
     'saldocaixas',
     'quantidadedevolumes',
     'estoqueatualvolumes',
+    'saldo',
+    'estoque',
+    'qtd',
+    'quantidade',
+    'qtde',
+    'saldoatual',
+    'estoqueatual',
+    'disponivel',
+    'saldofisico',
+    'estoquefisico',
+    'posicao',
+    'posicaofisica',
+    'qtdestoque',
+    'quant',
+    'quantidadeatual',
+    'estoquedisponivel',
+    'saldofinal',
+    'stock',
+    'balance',
   ],
   currentStockUnits: [
     'estoqueunidades',
     'unidades',
     'saldounidades',
     'qtdunidades',
+    'qtdeunidades',
     'currentstockunits',
     'saldounid',
     'pecas',
     'estoquetotalunidades',
     'quantidadedeunidades',
     'estoqueatualunidades',
+    'saldoun',
+    'qtdun',
+    'unidestoque',
+    'totalpecas',
+    'unidadesestoque',
   ],
   minStockPackages: [
     'estoqueminimo',
@@ -147,6 +221,12 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'estminimo',
     'estoqueminimovolumes',
     'minimocaixas',
+    'estoquedeseguranca',
+    'estseguranca',
+    'pontoressuprimento',
+    'min',
+    'saldominimo',
+    'qtdminima',
   ],
   unitWeightKg: [
     'pesounitario',
@@ -156,6 +236,8 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'pesounitariokg',
     'pesounitkg',
     'pesokg',
+    'pesoun',
+    'pesoporunidade',
   ],
   weightPerPackageKg: [
     'pesovolume',
@@ -165,6 +247,7 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'pesofardo',
     'pesobrutokg',
     'pesoporvolume',
+    'pesoporembalagem',
   ],
   costPrice: [
     'precocusto',
@@ -174,6 +257,12 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'costprice',
     'custounit',
     'precocustounitario',
+    'customedio',
+    'custoatual',
+    'vlrcusto',
+    'vlcusto',
+    'precodecusto',
+    'valorunitariocusto',
   ],
   salePrice: [
     'precovenda',
@@ -183,6 +272,12 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'preco',
     'precotabela',
     'precofinal',
+    'valortabela',
+    'precodevenda',
+    'vlrvenda',
+    'vlvenda',
+    'precounitario',
+    'valorunitario',
   ],
   lotNumber: [
     'lote',
@@ -191,6 +286,8 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'lotefabricacao',
     'partida',
     'numlote',
+    'numerodelote',
+    'lotes',
   ],
   manufactureDate: [
     'datafabricacao',
@@ -199,6 +296,7 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'manufacturedate',
     'dtfabricacao',
     'dtfab',
+    'datadefabricacao',
   ],
   expiryDate: [
     'datavalidade',
@@ -209,6 +307,8 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'dtvalidade',
     'dtvencimento',
     'dtval',
+    'datadevalidade',
+    'venc',
   ],
   shelfLifeMonths: [
     'vidautil',
@@ -216,6 +316,7 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'shelflifemonths',
     'validademeses',
     'prazoanos',
+    'meses',
   ],
   location: [
     'localizacao',
@@ -228,6 +329,9 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'prateleira',
     'almoxarifado',
     'doca',
+    'galpao',
+    'box',
+    'predio',
   ],
   supplierName: [
     'fornecedor',
@@ -236,6 +340,9 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'suppliername',
     'razaofornecedor',
     'fornecedorhomologado',
+    'marca',
+    'fornecedorprincipal',
+    'razaosocial',
   ],
   barcode: [
     'ean',
@@ -244,16 +351,18 @@ const FIELD_ALIASES: Record<keyof Omit<ParsedInventoryRow, 'rowNumber' | 'isVali
     'gtin',
     'codigodebarras',
     'ean13',
+    'codbarras',
+    'codbarra',
   ],
 };
 
 /**
  * Converte data de células de Excel (número serial ou string) em YYYY-MM-DD
  */
-function parseExcelDate(val: any): string {
+export function parseExcelDate(val: any): string {
   if (!val) return '';
   if (val instanceof Date) {
-    return val.toISOString().split('T')[0];
+    return isNaN(val.getTime()) ? '' : val.toISOString().split('T')[0];
   }
   if (typeof val === 'number') {
     // Excel date serial number (1900 date system)
@@ -265,14 +374,14 @@ function parseExcelDate(val: any): string {
     }
   }
   const str = String(val).trim();
-  // Formato DD/MM/YYYY
-  const brMatch = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  // Formato DD/MM/YYYY ou DD-MM-YYYY ou DD.MM.YYYY
+  const brMatch = str.match(/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{4})$/);
   if (brMatch) {
     const [, d, m, y] = brMatch;
     return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
   }
   // Formato YYYY-MM-DD
-  const isoMatch = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  const isoMatch = str.match(/^(\d{4})[\/\.-](\d{1,2})[\/\.-](\d{1,2})/);
   if (isoMatch) {
     const [, y, m, d] = isoMatch;
     return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
@@ -281,26 +390,128 @@ function parseExcelDate(val: any): string {
 }
 
 /**
- * Converte número com suporte a vírgulas e pontos monetários
+ * Converte número com suporte resiliente a formatos monetários e numéricos
+ * (brasileiro 1.250,50 ou americano 1,250.50 ou simples 12.5)
  */
-function parseNumber(val: any, fallback = 0): number {
+export function parseNumber(val: any, fallback = 0): number {
   if (val === null || val === undefined || val === '') return fallback;
   if (typeof val === 'number') return isNaN(val) ? fallback : val;
-  const clean = String(val)
-    .replace('R$', '')
-    .replace(/\s+/g, '')
-    .replace(/\./g, '')
-    .replace(',', '.');
-  const parsed = parseFloat(clean);
+
+  let str = String(val)
+    .replace(/R\$/gi, '')
+    .replace(/[$€£]/g, '')
+    .trim();
+
+  if (!str) return fallback;
+
+  const hasComma = str.includes(',');
+  const hasDot = str.includes('.');
+
+  if (hasComma && hasDot) {
+    const lastComma = str.lastIndexOf(',');
+    const lastDot = str.lastIndexOf('.');
+    if (lastComma > lastDot) {
+      // Padrão brasileiro: 1.234,56
+      str = str.replace(/\./g, '').replace(',', '.');
+    } else {
+      // Padrão americano: 1,234.56
+      str = str.replace(/,/g, '');
+    }
+  } else if (hasComma) {
+    // Somente vírgula: 1234,56 ou 10,5
+    str = str.replace(',', '.');
+  } else if (hasDot) {
+    // Somente ponto: 12.50 ou 1.000
+    const parts = str.split('.');
+    if (parts.length > 2) {
+      // Mais de um ponto: milhar brasileiro 1.000.000
+      str = str.replace(/\./g, '');
+    }
+  }
+
+  // Remove caracteres estranhos preservando dígitos, ponto e menos
+  str = str.replace(/[^0-9.-]/g, '');
+  const parsed = parseFloat(str);
   return isNaN(parsed) ? fallback : parsed;
+}
+
+/**
+ * Localiza a melhor aba de dados em uma planilha que possa conter múltiplas abas
+ */
+function findBestInventorySheet(workbook: XLSX.WorkBook): { sheetName: string; sheet: XLSX.WorkSheet } | null {
+  if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+    return null;
+  }
+
+  // Prioridades por nome comum
+  const preferredNames = ['estoque', 'produtos', 'itens', 'inventario', 'saldos', 'planilha1', 'sheet1', 'dados'];
+  for (const preferred of preferredNames) {
+    const found = workbook.SheetNames.find((s) => s.toLowerCase().includes(preferred));
+    if (found) {
+      const sheet = workbook.Sheets[found];
+      if (sheet && sheet['!ref']) {
+        return { sheetName: found, sheet };
+      }
+    }
+  }
+
+  // Procura a primeira aba que não esteja vazia
+  for (const name of workbook.SheetNames) {
+    const sheet = workbook.Sheets[name];
+    if (sheet && sheet['!ref']) {
+      return { sheetName: name, sheet };
+    }
+  }
+
+  const defaultName = workbook.SheetNames[0];
+  return { sheetName: defaultName, sheet: workbook.Sheets[defaultName] };
+}
+
+/**
+ * Detecta dinamicamente a linha de cabeçalho mesmo quando há títulos ou linhas em branco no topo
+ */
+function detectHeaderRowIndex(rows2D: any[][]): number {
+  if (!rows2D || rows2D.length === 0) return 0;
+
+  let bestIndex = 0;
+  let maxScore = 0;
+
+  // Analisa até as primeiras 25 linhas
+  const checkLimit = Math.min(25, rows2D.length);
+
+  for (let i = 0; i < checkLimit; i++) {
+    const row = rows2D[i];
+    if (!Array.isArray(row) || row.length === 0) continue;
+
+    let matchCount = 0;
+    for (const cell of row) {
+      if (cell === null || cell === undefined || cell === '') continue;
+      const normalized = normalizeHeaderKey(String(cell));
+      if (!normalized) continue;
+
+      for (const aliases of Object.values(FIELD_ALIASES)) {
+        if (aliases.includes(normalized)) {
+          matchCount++;
+          break;
+        }
+      }
+    }
+
+    if (matchCount > maxScore) {
+      maxScore = matchCount;
+      bestIndex = i;
+    }
+  }
+
+  return maxScore >= 1 ? bestIndex : 0;
 }
 
 /**
  * Faz a leitura de uma pasta de trabalho Excel ou CSV e mapeia para a estrutura de estoque
  */
 export function parseExcelWorkbook(workbook: XLSX.WorkBook): ExcelParseResult {
-  const sheetName = workbook.SheetNames[0];
-  if (!sheetName) {
+  const sheetInfo = findBestInventorySheet(workbook);
+  if (!sheetInfo || !sheetInfo.sheet) {
     return {
       success: false,
       sheetName: '',
@@ -309,14 +520,15 @@ export function parseExcelWorkbook(workbook: XLSX.WorkBook): ExcelParseResult {
       invalidRowsCount: 0,
       detectedColumns: {},
       rows: [],
-      errors: ['O arquivo Excel não contém nenhuma planilha legível.'],
+      errors: ['O arquivo Excel não contém nenhuma planilha legível com dados.'],
     };
   }
 
-  const sheet = workbook.Sheets[sheetName];
-  const rawRows: Record<string, any>[] = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+  const { sheetName, sheet } = sheetInfo;
 
-  if (rawRows.length === 0) {
+  // Lê a planilha em formato 2D para identificar a linha real de cabeçalho
+  const raw2D: any[][] = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+  if (!raw2D || raw2D.length === 0) {
     return {
       success: false,
       sheetName,
@@ -329,28 +541,46 @@ export function parseExcelWorkbook(workbook: XLSX.WorkBook): ExcelParseResult {
     };
   }
 
-  // Identifica todos os cabeçalhos presentes na planilha
-  const headerKeys = new Set<string>();
-  for (const r of rawRows) {
-    for (const k of Object.keys(r)) {
-      headerKeys.add(k);
-    }
-  }
+  // Detecta em qual linha está o cabeçalho
+  const headerRowIndex = detectHeaderRowIndex(raw2D);
+  const headerRow = raw2D[headerRowIndex] || [];
 
-  const normalizedToOriginal: Record<string, string> = {};
-  for (const h of headerKeys) {
-    normalizedToOriginal[normalizeHeaderKey(h)] = h;
-  }
+  // Mapeia colunas encontradas
+  const normalizedToOriginalHeader: Record<string, string> = {};
+  headerRow.forEach((col: any) => {
+    if (col !== null && col !== undefined && String(col).trim() !== '') {
+      normalizedToOriginalHeader[normalizeHeaderKey(String(col))] = String(col).trim();
+    }
+  });
 
   // Associa cada campo do sistema à coluna correspondente no Excel
   const fieldToHeader: Record<string, string> = {};
   for (const [field, aliases] of Object.entries(FIELD_ALIASES)) {
     for (const alias of aliases) {
-      if (normalizedToOriginal[alias]) {
-        fieldToHeader[field] = normalizedToOriginal[alias];
+      if (normalizedToOriginalHeader[alias]) {
+        fieldToHeader[field] = normalizedToOriginalHeader[alias];
         break;
       }
     }
+  }
+
+  // Lê as linhas de dados a partir da linha de cabeçalho
+  const rawRows: Record<string, any>[] = XLSX.utils.sheet_to_json(sheet, {
+    range: headerRowIndex,
+    defval: '',
+  });
+
+  if (rawRows.length === 0) {
+    return {
+      success: false,
+      sheetName,
+      totalRows: 0,
+      validRowsCount: 0,
+      invalidRowsCount: 0,
+      detectedColumns: fieldToHeader,
+      rows: [],
+      errors: ['Nenhuma linha de produto encontrada abaixo da linha de cabeçalho da planilha.'],
+    };
   }
 
   const parsedRows: ParsedInventoryRow[] = [];
@@ -358,10 +588,10 @@ export function parseExcelWorkbook(workbook: XLSX.WorkBook): ExcelParseResult {
   let invalidCount = 0;
 
   rawRows.forEach((row, index) => {
-    const rowNumber = index + 2; // Linha 1 = cabeçalho
+    const rowNumber = headerRowIndex + index + 2; // Linha real no Excel
     const errors: string[] = [];
 
-    // Mapeamento dinâmico por linha para suportar formatos flexíveis
+    // Mapeamento dinâmico flexível da linha
     const rowNormalizedKeys: Record<string, string> = {};
     for (const k of Object.keys(row)) {
       rowNormalizedKeys[normalizeHeaderKey(k)] = k;
@@ -382,16 +612,35 @@ export function parseExcelWorkbook(workbook: XLSX.WorkBook): ExcelParseResult {
       return undefined;
     };
 
-    const sku = String(getVal('sku') || '').trim();
-    const name = String(getVal('name') || '').trim();
+    let rawSku = String(getVal('sku') || '').trim();
+    let rawName = String(getVal('name') || '').trim();
 
-    if (!sku && !name) {
-      // Linha vazia ou irrelevante
+    // Se a linha estiver totalmente vazia, ignora
+    const hasAnyContent = Object.values(row).some((val) => val !== null && val !== undefined && String(val).trim() !== '');
+    if (!hasAnyContent) {
       return;
     }
 
-    if (!sku) errors.push('Código/SKU não informado');
-    if (!name) errors.push('Nome/Descrição do produto não informado');
+    // Se não tiver nem código nem nome, mas tiver colunas numéricas de saldo, tenta gerar nome padrão
+    if (!rawSku && !rawName) {
+      // Ignora linhas de rodapé ou totais
+      const firstCol = String(Object.values(row)[0] || '').toLowerCase();
+      if (firstCol.includes('total') || firstCol.includes('somatória') || firstCol.includes('resumo')) {
+        return;
+      }
+      return; // Linha sem produto identificável
+    }
+
+    // Se tiver nome mas não tiver SKU, gera SKU inteligente
+    if (!rawSku && rawName) {
+      const cleanSlug = normalizeHeaderKey(rawName).slice(0, 12).toUpperCase();
+      rawSku = `FLIND-${cleanSlug || 'ITEM'}-${rowNumber}`;
+    }
+
+    // Se tiver SKU mas não tiver nome, atribui nome amigável
+    if (rawSku && !rawName) {
+      rawName = `Item ${rawSku}`;
+    }
 
     // Categoria
     const rawCat = String(getVal('category') || '').trim();
@@ -405,9 +654,15 @@ export function parseExcelWorkbook(workbook: XLSX.WorkBook): ExcelParseResult {
     }
 
     // Embalagem / Unidade de volume
-    const packagingUnit = String(getVal('packagingUnit') || 'Caixa (CX)').trim();
+    let packagingUnit = String(getVal('packagingUnit') || 'Caixa (CX)').trim();
+    const pkgUpper = packagingUnit.toUpperCase();
+    if (pkgUpper === 'CX' || pkgUpper === 'CAIXA') packagingUnit = 'Caixa (CX)';
+    else if (pkgUpper === 'FD' || pkgUpper === 'FARDO') packagingUnit = 'Fardo (FD)';
+    else if (pkgUpper === 'PCT' || pkgUpper === 'PACOTE') packagingUnit = 'Pacote (PCT)';
+    else if (pkgUpper === 'RL' || pkgUpper === 'ROLO') packagingUnit = 'Rolo (RL)';
+    else if (pkgUpper === 'UN' || pkgUpper === 'UND' || pkgUpper === 'UNID') packagingUnit = 'Unidade (UN)';
 
-    // Unidades por volume / embalagem
+    // Fator de embalagem (Unidades por volume)
     let unitsPerPackage = parseNumber(getVal('unitsPerPackage'), 0);
 
     // Estoque em volumes vs unidades
@@ -464,7 +719,9 @@ export function parseExcelWorkbook(workbook: XLSX.WorkBook): ExcelParseResult {
     // Lote e Validades
     const lotNumber = String(getVal('lotNumber') || `LOTE-${new Date().getFullYear()}-IMP`).trim();
     const manufactureDate = parseExcelDate(getVal('manufactureDate')) || new Date().toISOString().split('T')[0];
-    const expiryDate = parseExcelDate(getVal('expiryDate')) || new Date(Date.now() + 365 * 86400000 * 3).toISOString().split('T')[0];
+    const expiryDate =
+      parseExcelDate(getVal('expiryDate')) ||
+      new Date(Date.now() + 365 * 86400000 * 3).toISOString().split('T')[0];
     const shelfLifeMonths = parseNumber(getVal('shelfLifeMonths'), 36);
 
     const location = String(getVal('location') || 'Almoxarifado Geral').trim();
@@ -490,8 +747,8 @@ export function parseExcelWorkbook(workbook: XLSX.WorkBook): ExcelParseResult {
 
     parsedRows.push({
       rowNumber,
-      sku,
-      name,
+      sku: rawSku,
+      name: rawName,
       category,
       packagingUnit,
       unitsPerPackage,
@@ -664,14 +921,38 @@ export function generateInventoryTemplateWorkbook(): XLSX.WorkBook {
 
   // Adicionar folha com Instruções de Preenchimento
   const instructions = [
-    { 'Instrução': '1. SKU / Código', 'Regra de Preenchimento': 'Obrigatório. Identificador único do item no sistema.' },
-    { 'Instrução': '2. Nome do Produto', 'Regra de Preenchimento': 'Obrigatório. Descrição completa do produto ou insumo.' },
-    { 'Instrução': '3. Tipo de Volume (Embalagem)', 'Regra de Preenchimento': 'Caixa (CX), Fardo (FD), Pacote (PCT), Rolo (RL), Palete (PAL) ou Unidade (UN).' },
-    { 'Instrução': '4. Unidades por Volume', 'Regra de Preenchimento': 'Quantidade de unidades individuais dentro de cada caixa/fardo. Se não informado, o sistema assume 1.' },
-    { 'Instrução': '5. Estoque Atual (Volumes)', 'Regra de Preenchimento': 'Quantidade física em embalagens/caixas no armazém. O sistema calcula automaticamente o total em unidades multiplicando pelo fator de embalagem.' },
-    { 'Instrução': '6. Estoque Atual (Unidades)', 'Regra de Preenchimento': 'Opcional se preenchido em volumes. Se informado apenas unidades, o sistema calcula os volumes.' },
-    { 'Instrução': '7. Estoque Mínimo', 'Regra de Preenchimento': 'Ponto de pedido / estoque de segurança em volumes. Abaixo deste nível, o sistema sinaliza risco e pode acionar reposição automática.' },
-    { 'Instrução': '8. Atualização Inteligente', 'Regra de Preenchimento': 'Se o SKU já existir no sistema, o estoque e volumes serão atualizados. Se não existir, um novo produto será cadastrado.' },
+    {
+      'Instrução': '1. SKU / Código',
+      'Regra de Preenchimento': 'Identificador único do produto ou insumo no sistema.',
+    },
+    {
+      'Instrução': '2. Nome do Produto',
+      'Regra de Preenchimento': 'Descrição completa do produto. Se não houver SKU, o sistema gera automaticamente.',
+    },
+    {
+      'Instrução': '3. Tipo de Volume (Embalagem)',
+      'Regra de Preenchimento': 'Caixa (CX), Fardo (FD), Pacote (PCT), Rolo (RL), Palete (PAL) ou Unidade (UN).',
+    },
+    {
+      'Instrução': '4. Unidades por Volume',
+      'Regra de Preenchimento': 'Quantidade de unidades dentro de cada caixa/fardo. O padrão é 1 se não informado.',
+    },
+    {
+      'Instrução': '5. Estoque Atual (Volumes)',
+      'Regra de Preenchimento': 'Quantidade física em caixas/fardos. O sistema calcula automaticamente o total em unidades.',
+    },
+    {
+      'Instrução': '6. Estoque Atual (Unidades)',
+      'Regra de Preenchimento': 'Opcional se preenchido em volumes. Se informado apenas unidades, o sistema calcula os volumes.',
+    },
+    {
+      'Instrução': '7. Estoque Mínimo',
+      'Regra de Preenchimento': 'Ponto de pedido / estoque de segurança em volumes. Aciona alertas e reposições automáticas.',
+    },
+    {
+      'Instrução': '8. Atualização Inteligente',
+      'Regra de Preenchimento': 'Se o SKU ou Nome já existir, o saldo será atualizado. Se não existir, um novo item será cadastrado.',
+    },
   ];
   const wsInst = XLSX.utils.json_to_sheet(instructions);
   wsInst['!cols'] = [{ wch: 30 }, { wch: 90 }];
