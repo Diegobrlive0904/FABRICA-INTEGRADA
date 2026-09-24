@@ -15,6 +15,7 @@ import {
   IntegrationSyncLog,
   TimelineEvent,
   ProductInventory,
+  StockStatus,
   Supplier,
   PurchaseOrder,
   OpenPoDetail,
@@ -22,6 +23,8 @@ import {
   MissingProductsDiagnostic,
   SupplierQuotationOffer,
   ProductQuotationComparison,
+  InventoryImportRow,
+  InventoryImportResult,
 } from '../../types';
 
 interface DatabaseSchema {
@@ -3607,6 +3610,238 @@ class DatabaseManager {
 
     this.persist();
     return po;
+  }
+
+  // ====================================================
+  // IMPORTAÇÃO DE ESTOQUE E VOLUMES VIA PLANILHA XLSX
+  // ====================================================
+  public importInventoryItems(
+    rows: InventoryImportRow[],
+    options?: {
+      mode?: 'UPSERT' | 'UPDATE_ONLY' | 'REPLACE_STOCK';
+      triggerAutoReorder?: boolean;
+      userOrService?: string;
+    }
+  ): InventoryImportResult {
+    const mode = options?.mode || 'UPSERT';
+    const triggerAutoReorder = options?.triggerAutoReorder !== false;
+    const userOrService = options?.userOrService || 'Importação Planilha XLSX';
+    const nowIso = new Date().toISOString();
+
+    let createdCount = 0;
+    let updatedCount = 0;
+    let unchangedCount = 0;
+    let totalPackagesUpdated = 0;
+    let totalUnitsCalculated = 0;
+    const itemsResult: InventoryImportResult['items'] = [];
+    const autoOrdersTriggered: PurchaseOrder[] = [];
+
+    for (const row of rows) {
+      const sku = (row.sku || '').trim();
+      const name = (row.name || '').trim();
+      if (!sku && !name) continue;
+
+      const existing = this.getProductBySku(sku) || (name ? this.data.products.find((p) => p.name.toLowerCase() === name.toLowerCase()) : undefined);
+
+      const packagingUnit = row.packagingUnit || existing?.packagingUnit || 'Caixa (CX)';
+      const unitsPerPackage = Math.max(1, Number(row.unitsPerPackage) || existing?.unitsPerPackage || 1);
+
+      // Calcular volumes e unidades
+      let newPackages = existing?.currentStockPackages ?? 0;
+      if (row.currentStockPackages !== undefined && !isNaN(Number(row.currentStockPackages))) {
+        newPackages = Math.max(0, Math.round(Number(row.currentStockPackages)));
+      } else if (row.currentStockUnits !== undefined && !isNaN(Number(row.currentStockUnits))) {
+        newPackages = Math.ceil(Math.max(0, Number(row.currentStockUnits)) / unitsPerPackage);
+      }
+
+      const newUnits = newPackages * unitsPerPackage;
+      totalPackagesUpdated += newPackages;
+      totalUnitsCalculated += newUnits;
+
+      const minStockPackages = row.minStockPackages !== undefined && !isNaN(Number(row.minStockPackages))
+        ? Math.max(0, Math.round(Number(row.minStockPackages)))
+        : (existing?.minStockPackages ?? 20);
+
+      // Calcular status do produto
+      let status: StockStatus = 'NORMAL';
+      if (newPackages <= 0) {
+        status = 'OUT_OF_STOCK';
+      } else if (newPackages <= Math.max(1, Math.floor(minStockPackages * 0.4))) {
+        status = 'CRITICAL';
+      } else if (newPackages <= minStockPackages) {
+        status = 'LOW';
+      }
+
+      // Localizar fornecedor correspondente se informado
+      let supplierId = existing?.supplierId || 'supp-1';
+      let supplierName = existing?.supplierName || 'Fornecedor Homologado';
+      let supplierPhone = existing?.supplierPhone || '+55 11 99999-9999';
+
+      if (row.supplierName) {
+        const foundSupp = this.data.suppliers.find(
+          (s) =>
+            s.name.toLowerCase().includes(row.supplierName!.toLowerCase()) ||
+            s.tradeName.toLowerCase().includes(row.supplierName!.toLowerCase())
+        );
+        if (foundSupp) {
+          supplierId = foundSupp.id;
+          supplierName = foundSupp.tradeName || foundSupp.name;
+          supplierPhone = foundSupp.whatsapp || foundSupp.phone || supplierPhone;
+        } else {
+          supplierName = row.supplierName;
+        }
+      }
+
+      if (existing) {
+        const previousPackages = existing.currentStockPackages;
+        const previousUnits = existing.currentStockUnits;
+        const hasChanged =
+          previousPackages !== newPackages ||
+          existing.packagingUnit !== packagingUnit ||
+          existing.unitsPerPackage !== unitsPerPackage ||
+          (row.costPrice !== undefined && existing.costPrice !== row.costPrice) ||
+          (row.salePrice !== undefined && existing.salePrice !== row.salePrice);
+
+        existing.currentStockPackages = newPackages;
+        existing.currentStockUnits = newUnits;
+        existing.packagingUnit = packagingUnit;
+        existing.unitsPerPackage = unitsPerPackage;
+        existing.minStockPackages = minStockPackages;
+        existing.minStockUnits = minStockPackages * unitsPerPackage;
+        existing.status = status;
+        existing.updatedAt = nowIso;
+
+        if (row.unitWeightKg !== undefined && row.unitWeightKg > 0) existing.unitWeightKg = row.unitWeightKg;
+        if (row.weightPerPackageKg !== undefined && row.weightPerPackageKg > 0) existing.weightPerPackageKg = row.weightPerPackageKg;
+        if (row.costPrice !== undefined && row.costPrice > 0) existing.costPrice = row.costPrice;
+        if (row.salePrice !== undefined && row.salePrice > 0) existing.salePrice = row.salePrice;
+        if (row.lotNumber) existing.lotNumber = row.lotNumber;
+        if (row.manufactureDate) existing.manufactureDate = row.manufactureDate;
+        if (row.expiryDate) existing.expiryDate = row.expiryDate;
+        if (row.shelfLifeMonths) existing.shelfLifeMonths = row.shelfLifeMonths;
+        if (row.location) existing.location = row.location;
+        if (row.barcode) existing.barcode = row.barcode;
+        if (row.category) existing.category = row.category;
+        if (supplierName) existing.supplierName = supplierName;
+        if (supplierId) existing.supplierId = supplierId;
+
+        if (hasChanged) {
+          updatedCount++;
+        } else {
+          unchangedCount++;
+        }
+
+        itemsResult.push({
+          id: existing.id,
+          sku: existing.sku,
+          name: existing.name,
+          action: hasChanged ? 'UPDATED' : 'UNCHANGED',
+          previousPackages,
+          newPackages,
+          previousUnits,
+          newUnits,
+          packagingUnit,
+          unitsPerPackage,
+          status,
+        });
+
+        if (triggerAutoReorder && (status === 'LOW' || status === 'CRITICAL' || status === 'OUT_OF_STOCK')) {
+          const autoPo = this.triggerAutoReorderForProduct(existing);
+          if (autoPo) autoOrdersTriggered.push(autoPo);
+        }
+      } else if (mode === 'UPSERT') {
+        // Criar novo produto a partir da planilha
+        const newProduct: ProductInventory = {
+          id: `prod-imp-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          sku,
+          name: name || sku,
+          category: row.category || 'Hospitalar & Cirúrgico',
+          packagingUnit,
+          unitsPerPackage,
+          unitWeightKg: Number(row.unitWeightKg) || 0.1,
+          weightPerPackageKg: Number(row.weightPerPackageKg) || (Number(row.unitWeightKg) || 0.1) * unitsPerPackage,
+          manufactureDate: row.manufactureDate || nowIso.split('T')[0],
+          expiryDate: row.expiryDate || new Date(Date.now() + 365 * 86400000 * 3).toISOString().split('T')[0],
+          shelfLifeMonths: Number(row.shelfLifeMonths) || 36,
+          lotNumber: row.lotNumber || `LOTE-${new Date().getFullYear()}-IMP`,
+          currentStockPackages: newPackages,
+          currentStockUnits: newUnits,
+          minStockPackages,
+          minStockUnits: minStockPackages * unitsPerPackage,
+          reorderQuantityPackages: Math.max(10, minStockPackages * 2),
+          supplierId,
+          supplierName,
+          supplierPhone,
+          costPrice: Number(row.costPrice) || 0,
+          salePrice: Number(row.salePrice) || 0,
+          location: row.location || 'Almoxarifado Geral',
+          status,
+          autoReorderEnabled: true,
+          barcode: row.barcode,
+          createdAt: nowIso,
+          updatedAt: nowIso,
+        };
+
+        this.data.products.push(newProduct);
+        createdCount++;
+
+        itemsResult.push({
+          id: newProduct.id,
+          sku: newProduct.sku,
+          name: newProduct.name,
+          action: 'CREATED',
+          previousPackages: 0,
+          newPackages,
+          previousUnits: 0,
+          newUnits,
+          packagingUnit,
+          unitsPerPackage,
+          status,
+        });
+
+        if (triggerAutoReorder && (status === 'LOW' || status === 'CRITICAL' || status === 'OUT_OF_STOCK')) {
+          const autoPo = this.triggerAutoReorderForProduct(newProduct);
+          if (autoPo) autoOrdersTriggered.push(autoPo);
+        }
+      }
+    }
+
+    const auditLogId = `aud-imp-${Date.now()}`;
+    this.addAuditLog({
+      id: auditLogId,
+      action: 'INVENTORY_IMPORTED_EXCEL',
+      origin: 'DatabaseManager.importInventoryItems',
+      entity: 'ProductInventory',
+      entityId: 'BATCH_IMPORT',
+      newValue: {
+        totalProcessed: rows.length,
+        createdCount,
+        updatedCount,
+        unchangedCount,
+        totalPackagesUpdated,
+        totalUnitsCalculated,
+        autoOrdersTriggeredCount: autoOrdersTriggered.length,
+      },
+      userOrService,
+      correlationId: `corr-imp-${Date.now()}`,
+      createdAt: nowIso,
+    });
+
+    this.persist();
+
+    return {
+      success: true,
+      totalProcessed: rows.length,
+      createdCount,
+      updatedCount,
+      unchangedCount,
+      totalPackagesUpdated,
+      totalUnitsCalculated,
+      items: itemsResult,
+      autoOrdersTriggered,
+      auditLogId,
+      message: `Importação de estoque XLSX processada com sucesso! ${updatedCount} produto(s) atualizado(s), ${createdCount} novo(s) produto(s) cadastrado(s). Total em volumes: ${totalPackagesUpdated.toLocaleString('pt-BR')}, total em unidades: ${totalUnitsCalculated.toLocaleString('pt-BR')}.`,
+    };
   }
 
   // ====================================================

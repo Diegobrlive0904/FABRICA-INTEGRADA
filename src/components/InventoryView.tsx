@@ -22,8 +22,11 @@ import {
   Edit3,
   X,
   Zap,
+  FileSpreadsheet,
+  Download,
 } from 'lucide-react';
 import { ProductInventory, Supplier, PurchaseOrder } from '../types';
+import { ExcelInventoryImportModal } from './ExcelInventoryImportModal';
 
 interface InventoryViewProps {
   onRefreshGlobal?: () => void;
@@ -49,6 +52,8 @@ export const InventoryView: React.FC<InventoryViewProps> = ({ onRefreshGlobal })
 
   const [labelModalOpen, setLabelModalOpen] = useState(false);
   const [labelProduct, setLabelProduct] = useState<ProductInventory | null>(null);
+
+  const [excelModalOpen, setExcelModalOpen] = useState(false);
 
   const [notification, setNotification] = useState<{
     type: 'success' | 'warning' | 'info';
@@ -288,6 +293,26 @@ export const InventoryView: React.FC<InventoryViewProps> = ({ onRefreshGlobal })
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => setExcelModalOpen(true)}
+            className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center space-x-1.5 shadow-xs transition-colors"
+            title="Importa planilha XLSX de estoque e preenche volumes e saldos automaticamente"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" />
+            <span>Importar Planilha XLSX</span>
+          </button>
+
+          <a
+            href="/api/inventory/export-xlsx"
+            download="estoque_flind.xlsx"
+            className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300/80 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-colors"
+            title="Exporta todos os produtos, volumes e unidades em formato Excel"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Exportar XLSX</span>
+          </a>
+
           <button
             type="button"
             onClick={handleScanReorder}
@@ -1192,6 +1217,24 @@ export const InventoryView: React.FC<InventoryViewProps> = ({ onRefreshGlobal })
           </div>
         </div>
       )}
+
+      {/* Modal de Importação de Estoque via Planilha XLSX */}
+      <ExcelInventoryImportModal
+        isOpen={excelModalOpen}
+        onClose={() => setExcelModalOpen(false)}
+        onSuccess={(result) => {
+          fetchData();
+          if (onRefreshGlobal) onRefreshGlobal();
+          setNotification({
+            type: 'success',
+            message: result.message,
+            details:
+              result.autoOrdersTriggered.length > 0
+                ? `${result.autoOrdersTriggered.length} ordem(ns) de reposição disparada(s) automaticamente para fornecedores via WhatsApp.`
+                : undefined,
+          });
+        }}
+      />
     </div>
   );
 };

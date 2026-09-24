@@ -530,6 +530,55 @@ export interface MissingProductsDiagnostic {
   items: MissingProductItem[];
 }
 
+export interface InventoryImportRow {
+  sku: string;
+  name: string;
+  category?: ProductInventory['category'];
+  packagingUnit?: string;
+  unitsPerPackage?: number;
+  currentStockPackages?: number;
+  currentStockUnits?: number;
+  minStockPackages?: number;
+  unitWeightKg?: number;
+  weightPerPackageKg?: number;
+  costPrice?: number;
+  salePrice?: number;
+  lotNumber?: string;
+  manufactureDate?: string;
+  expiryDate?: string;
+  shelfLifeMonths?: number;
+  location?: string;
+  supplierName?: string;
+  supplierId?: string;
+  barcode?: string;
+}
+
+export interface InventoryImportResult {
+  success: boolean;
+  totalProcessed: number;
+  createdCount: number;
+  updatedCount: number;
+  unchangedCount: number;
+  totalPackagesUpdated: number;
+  totalUnitsCalculated: number;
+  items: Array<{
+    id: string;
+    sku: string;
+    name: string;
+    action: 'CREATED' | 'UPDATED' | 'UNCHANGED';
+    previousPackages?: number;
+    newPackages: number;
+    previousUnits?: number;
+    newUnits: number;
+    packagingUnit: string;
+    unitsPerPackage: number;
+    status: StockStatus;
+  }>;
+  autoOrdersTriggered: PurchaseOrder[];
+  auditLogId: string;
+  message: string;
+}
+
 export interface Supplier {
   id: string;
   name: string;

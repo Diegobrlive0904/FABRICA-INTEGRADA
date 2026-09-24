@@ -18,7 +18,13 @@ import {
   ProductInventory,
   Supplier,
   PurchaseOrder,
+  InventoryImportRow,
 } from '../../types';
+import * as XLSX from 'xlsx';
+import {
+  parseExcelWorkbook,
+  generateInventoryTemplateWorkbook,
+} from '../services/excel-inventory-service';
 
 export const apiRouter = Router();
 
@@ -1661,6 +1667,158 @@ apiRouter.post('/inventory/scan-reorder', (req: Request, res: Response) => {
       ? `Varredura de estoque concluída: ${triggered.length} ordens de ressuprimento geradas com disparos automáticos de WhatsApp aos fornecedores!`
       : 'Varredura concluída: Todos os produtos estão com níveis de estoque saudáveis.',
   });
+});
+
+// Download da Planilha Modelo Oficial XLSX
+apiRouter.get('/inventory/template-xlsx', (req: Request, res: Response) => {
+  try {
+    const wb = generateInventoryTemplateWorkbook();
+    const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename="modelo_estoque_volumes_flind.xlsx"');
+    res.send(buffer);
+  } catch (err: any) {
+    console.error('Erro ao gerar template XLSX:', err);
+    res.status(500).json({ error: `Erro ao gerar modelo XLSX: ${err.message}` });
+  }
+});
+
+// Exportação completa do estoque atual em XLSX
+apiRouter.get('/inventory/export-xlsx', (req: Request, res: Response) => {
+  try {
+    const products = db.getProducts();
+    const rows = products.map((p) => ({
+      'SKU / Código': p.sku,
+      'Nome do Produto': p.name,
+      'Categoria': p.category,
+      'Tipo de Volume (Embalagem)': p.packagingUnit,
+      'Unidades por Volume': p.unitsPerPackage,
+      'Estoque Atual (Volumes)': p.currentStockPackages,
+      'Estoque Atual (Unidades)': p.currentStockUnits,
+      'Estoque Mínimo (Volumes)': p.minStockPackages,
+      'Estoque Mínimo (Unidades)': p.minStockUnits,
+      'Status': p.status === 'NORMAL' ? 'Normal' : p.status === 'LOW' ? 'Baixo' : p.status === 'CRITICAL' ? 'Crítico' : 'Esgotado',
+      'Peso Unitário (kg)': p.unitWeightKg,
+      'Peso por Volume (kg)': p.weightPerPackageKg,
+      'Preço de Custo (R$)': p.costPrice,
+      'Preço de Venda (R$)': p.salePrice,
+      'Lote': p.lotNumber,
+      'Data de Fabricação': p.manufactureDate,
+      'Data de Validade': p.expiryDate,
+      'Localização Almoxarifado': p.location,
+      'Fornecedor': p.supplierName,
+      'EAN / Código de Barras': p.barcode || '',
+    }));
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, 'Estoque Flind Atual');
+    const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="estoque_flind_${new Date().toISOString().split('T')[0]}.xlsx"`);
+    res.send(buffer);
+  } catch (err: any) {
+    console.error('Erro ao exportar estoque XLSX:', err);
+    res.status(500).json({ error: `Erro ao exportar estoque XLSX: ${err.message}` });
+  }
+});
+
+// Prévia de leitura de arquivo XLSX (sem salvar no banco)
+apiRouter.post('/inventory/preview-xlsx', (req: Request, res: Response) => {
+  try {
+    const { base64, fileName } = req.body;
+    if (!base64) {
+      return res.status(400).json({ error: 'Nenhum dado em base64 recebido para leitura.' });
+    }
+
+    // Limpa prefixo de data URI caso enviado
+    const cleanBase64 = base64.replace(/^data:[^;]+;base64,/, '');
+    const buffer = Buffer.from(cleanBase64, 'base64');
+    const workbook = XLSX.read(buffer, { type: 'buffer' });
+    const parseResult = parseExcelWorkbook(workbook);
+    parseResult.fileName = fileName;
+
+    // Cruza com itens atuais do banco para gerar relatório prévio de atualização vs criação
+    const currentProducts = db.getProducts();
+    const previewComparison = parseResult.rows.map((row) => {
+      const match = currentProducts.find(
+        (p) => p.sku.toLowerCase() === row.sku.toLowerCase() || (row.name && p.name.toLowerCase() === row.name.toLowerCase())
+      );
+      return {
+        ...row,
+        action: match ? 'UPDATE' : 'CREATE',
+        existingProduct: match
+          ? {
+              id: match.id,
+              name: match.name,
+              currentStockPackages: match.currentStockPackages,
+              currentStockUnits: match.currentStockUnits,
+              packagingUnit: match.packagingUnit,
+              unitsPerPackage: match.unitsPerPackage,
+              status: match.status,
+            }
+          : undefined,
+      };
+    });
+
+    const willUpdateCount = previewComparison.filter((p) => p.action === 'UPDATE').length;
+    const willCreateCount = previewComparison.filter((p) => p.action === 'CREATE').length;
+
+    res.json({
+      ...parseResult,
+      rows: previewComparison,
+      willUpdateCount,
+      willCreateCount,
+    });
+  } catch (err: any) {
+    console.error('Erro ao processar prévia XLSX:', err);
+    res.status(400).json({ error: `Falha ao interpretar arquivo XLSX: ${err.message}` });
+  }
+});
+
+// Importação e gravação definitiva de estoque e volumes via XLSX
+apiRouter.post('/inventory/import-xlsx', (req: Request, res: Response) => {
+  try {
+    const { base64, rows, mode, triggerAutoReorder, fileName } = req.body;
+
+    let itemsToImport: InventoryImportRow[] = [];
+
+    if (Array.isArray(rows) && rows.length > 0) {
+      itemsToImport = rows;
+    } else if (base64) {
+      const cleanBase64 = base64.replace(/^data:[^;]+;base64,/, '');
+      const buffer = Buffer.from(cleanBase64, 'base64');
+      const workbook = XLSX.read(buffer, { type: 'buffer' });
+      const parseResult = parseExcelWorkbook(workbook);
+
+      if (!parseResult.success || parseResult.rows.length === 0) {
+        return res.status(400).json({
+          error: 'Nenhum dado legível de estoque ou volumes foi localizado no arquivo.',
+          details: parseResult.errors,
+        });
+      }
+
+      itemsToImport = parseResult.rows.filter((r) => r.isValid);
+    } else {
+      return res.status(400).json({ error: 'Nenhum dado ou arquivo enviado para importação.' });
+    }
+
+    if (itemsToImport.length === 0) {
+      return res.status(400).json({ error: 'Nenhum item válido para atualizar no estoque.' });
+    }
+
+    const result = db.importInventoryItems(itemsToImport, {
+      mode: mode || 'UPSERT',
+      triggerAutoReorder: triggerAutoReorder !== false,
+      userOrService: fileName ? `Importação XLSX (${fileName})` : 'Importação Planilha XLSX',
+    });
+
+    res.json(result);
+  } catch (err: any) {
+    console.error('Erro ao importar estoque XLSX:', err);
+    res.status(500).json({ error: `Erro no processamento da importação: ${err.message}` });
+  }
 });
 
 // ==========================================

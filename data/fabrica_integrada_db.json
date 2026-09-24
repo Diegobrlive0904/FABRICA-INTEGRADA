@@ -298,6 +298,21 @@
       "country": "Brasil",
       "isDefault": true,
       "createdAt": "2026-09-23T18:19:46.904Z"
+    },
+    {
+      "id": "addr-del-cust-1-mufmu5y9",
+      "customerId": "cust-1",
+      "type": "DELIVERY",
+      "street": "Av. Paulista",
+      "number": "1842",
+      "complement": "Galpão CAF - Insumos e Descartáveis",
+      "neighborhood": "Bela Vista",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01310-200",
+      "country": "Brasil",
+      "isDefault": true,
+      "createdAt": "2026-09-24T14:33:51.777Z"
     }
   ],
   "deliveryRules": [
@@ -388,7 +403,7 @@
       "invoiceKey": "35260914285932000144550010000048211987654321",
       "trackingToken": "trc_1582_a8f9c10e",
       "createdAt": "2026-09-22T01:00:00.000Z",
-      "updatedAt": "2026-09-23T18:19:46.907Z",
+      "updatedAt": "2026-09-24T14:33:51.780Z",
       "items": [
         {
           "id": "item-1",
@@ -480,7 +495,7 @@
           "status": "DELAYED",
           "startedAt": "2026-09-23T13:55:51.351Z",
           "completedAt": "2026-09-22T08:36:00.000Z",
-          "durationMinutes": 263,
+          "durationMinutes": 1478,
           "expectedSlaMinutes": 15,
           "responsible": "Operador Fábrica",
           "sourceSystem": "SINK_ERP",
@@ -497,7 +512,7 @@
           "responsible": "Equipe Expedição Doca 2",
           "sourceSystem": "FABRICA_INTEGRADA",
           "notes": "Aguardando conferência de volumes e impressão de etiqueta QR Code.",
-          "durationMinutes": 2023
+          "durationMinutes": 3237
         },
         {
           "id": "tl-7",
@@ -600,6 +615,21 @@
             "country": "Brasil",
             "isDefault": true,
             "createdAt": "2026-09-23T18:19:46.904Z"
+          },
+          {
+            "id": "addr-del-cust-1-mufmu5y9",
+            "customerId": "cust-1",
+            "type": "DELIVERY",
+            "street": "Av. Paulista",
+            "number": "1842",
+            "complement": "Galpão CAF - Insumos e Descartáveis",
+            "neighborhood": "Bela Vista",
+            "city": "São Paulo",
+            "state": "SP",
+            "zipCode": "01310-200",
+            "country": "Brasil",
+            "isDefault": true,
+            "createdAt": "2026-09-24T14:33:51.777Z"
           }
         ],
         "notes": "Cliente Direto da Fábrica (B2B / Sem Site) - Atendimento via Televendas, Representante ou Contrato Fabril."
@@ -638,7 +668,7 @@
       "invoiceKey": "35260908921344000219550010000048221876543210",
       "trackingToken": "trc_1583_b7d2f4a1",
       "createdAt": "2026-09-21T16:00:00.000Z",
-      "updatedAt": "2026-09-23T18:19:46.908Z",
+      "updatedAt": "2026-09-24T14:33:51.780Z",
       "items": [
         {
           "id": "item-3",
@@ -726,7 +756,7 @@
           "stageLabel": "Expedição & Etiquetagem",
           "status": "DELAYED",
           "startedAt": "2026-09-21T22:12:00.000Z",
-          "durationMinutes": 2647,
+          "durationMinutes": 3861,
           "expectedSlaMinutes": 480,
           "responsible": "Doca de Carga 1",
           "sourceSystem": "FABRICA_INTEGRADA",
@@ -835,7 +865,7 @@
       "paymentMethod": "PIX_AVISTA",
       "paymentStatus": "PAID",
       "createdAt": "2026-09-22T09:54:00.000Z",
-      "updatedAt": "2026-09-23T18:19:46.908Z",
+      "updatedAt": "2026-09-24T14:33:51.781Z",
       "items": [
         {
           "id": "item-4",
@@ -876,7 +906,7 @@
           "responsible": "SINK ERP Queue Worker",
           "sourceSystem": "SINK_ERP",
           "notes": "Fila de sincronização com SINK ERP aguardando handshake.",
-          "durationMinutes": 1944
+          "durationMinutes": 3158
         },
         {
           "id": "tl-21",
@@ -1014,6 +1044,21 @@
             "country": "Brasil",
             "isDefault": true,
             "createdAt": "2026-09-23T18:19:46.904Z"
+          },
+          {
+            "id": "addr-del-cust-1-mufmu5y9",
+            "customerId": "cust-1",
+            "type": "DELIVERY",
+            "street": "Av. Paulista",
+            "number": "1842",
+            "complement": "Galpão CAF - Insumos e Descartáveis",
+            "neighborhood": "Bela Vista",
+            "city": "São Paulo",
+            "state": "SP",
+            "zipCode": "01310-200",
+            "country": "Brasil",
+            "isDefault": true,
+            "createdAt": "2026-09-24T14:33:51.777Z"
           }
         ],
         "notes": "Cliente Direto da Fábrica (B2B / Sem Site) - Atendimento via Televendas, Representante ou Contrato Fabril."
@@ -1087,7 +1132,7 @@
           "responsible": "SINK ERP Queue Worker",
           "sourceSystem": "SINK_ERP",
           "notes": "Encaminhado para a fila de sincronização com o SINK ERP.",
-          "durationMinutes": 1499
+          "durationMinutes": 2713
         },
         {
           "id": "tl-tray-TEST-ORD-1790097625599-3",
@@ -1154,7 +1199,7 @@
         }
       ],
       "createdAt": "2026-09-22T17:20:25.601Z",
-      "updatedAt": "2026-09-23T18:19:46.908Z",
+      "updatedAt": "2026-09-24T14:33:51.781Z",
       "customer": {
         "id": "cust-tray-994",
         "externalId": "TRAY-994",
@@ -1283,7 +1328,7 @@
           "responsible": "SINK ERP Queue Worker",
           "sourceSystem": "SINK_ERP",
           "notes": "Encaminhado para a fila de sincronização com o SINK ERP.",
-          "durationMinutes": 1434
+          "durationMinutes": 2648
         },
         {
           "id": "tl-tray-TEST-ORD-1790101541968-3",
@@ -1350,7 +1395,7 @@
         }
       ],
       "createdAt": "2026-09-22T18:25:41.972Z",
-      "updatedAt": "2026-09-23T18:19:46.908Z",
+      "updatedAt": "2026-09-24T14:33:51.781Z",
       "customer": {
         "id": "cust-tray-994",
         "externalId": "TRAY-994",
@@ -1484,12 +1529,13 @@
           "orderId": "ord-tray-TEST-ORD-1790187586902",
           "stage": "ERP_INTEGRATED",
           "stageLabel": "Integrado ao ERP",
-          "status": "IN_PROGRESS",
+          "status": "DELAYED",
           "startedAt": "2026-09-23T18:19:46.904Z",
           "expectedSlaMinutes": 30,
           "responsible": "SINK ERP Queue Worker",
           "sourceSystem": "SINK_ERP",
-          "notes": "Encaminhado para a fila de sincronização com o SINK ERP."
+          "notes": "Encaminhado para a fila de sincronização com o SINK ERP.",
+          "durationMinutes": 1214
         },
         {
           "id": "tl-tray-TEST-ORD-1790187586902-3",
@@ -1556,7 +1602,245 @@
         }
       ],
       "createdAt": "2026-09-23T18:19:46.904Z",
-      "updatedAt": "2026-09-23T18:19:46.904Z"
+      "updatedAt": "2026-09-24T14:33:51.781Z",
+      "customer": {
+        "id": "cust-1",
+        "externalId": "TRAY-CUST-881",
+        "name": "Distribuidora Metalúrgica Aliança Ltda",
+        "tradeName": "Metalúrgica Aliança",
+        "taxId": "14.285.932/0001-44",
+        "email": "compras@metalurgicaalianca.com.br",
+        "phone": "+55 11 98452-1100",
+        "createdAt": "2026-08-23T10:00:00.000Z",
+        "updatedAt": "2026-09-23T18:04:43.927Z",
+        "segment": "Hospitalar & Cirúrgico",
+        "flindOrigin": "DIRETO_B2B",
+        "addresses": [
+          {
+            "id": "addr-1-fiscal",
+            "customerId": "cust-1",
+            "type": "FISCAL",
+            "street": "Av. Paulista",
+            "number": "1842",
+            "complement": "Conjunto 141",
+            "neighborhood": "Bela Vista",
+            "city": "São Paulo",
+            "state": "SP",
+            "zipCode": "01310-200",
+            "country": "Brasil",
+            "isDefault": false,
+            "createdAt": "2026-08-23T10:00:00.000Z"
+          },
+          {
+            "id": "addr-1-billing",
+            "customerId": "cust-1",
+            "type": "BILLING",
+            "street": "Av. Paulista",
+            "number": "1842",
+            "complement": "Conjunto 142 - Financeiro",
+            "neighborhood": "Bela Vista",
+            "city": "São Paulo",
+            "state": "SP",
+            "zipCode": "01310-200",
+            "country": "Brasil",
+            "isDefault": false,
+            "createdAt": "2026-08-23T10:00:00.000Z"
+          },
+          {
+            "id": "addr-1-delivery",
+            "customerId": "cust-1",
+            "type": "DELIVERY",
+            "street": "Rodovia Presidente Dutra",
+            "number": "Km 218",
+            "complement": "Galpão 4B - Entrada de Cargas",
+            "neighborhood": "Cumbica",
+            "city": "Guarulhos",
+            "state": "SP",
+            "zipCode": "07180-000",
+            "country": "Brasil",
+            "isDefault": true,
+            "createdAt": "2026-08-23T10:00:00.000Z"
+          },
+          {
+            "id": "addr-del-cust-1-muefguhk",
+            "customerId": "cust-1",
+            "type": "DELIVERY",
+            "street": "Av. Paulista",
+            "number": "1842",
+            "complement": "Galpão CAF - Insumos e Descartáveis",
+            "neighborhood": "Bela Vista",
+            "city": "São Paulo",
+            "state": "SP",
+            "zipCode": "01310-200",
+            "country": "Brasil",
+            "isDefault": true,
+            "createdAt": "2026-09-23T18:19:46.904Z"
+          },
+          {
+            "id": "addr-del-cust-1-mufmu5y9",
+            "customerId": "cust-1",
+            "type": "DELIVERY",
+            "street": "Av. Paulista",
+            "number": "1842",
+            "complement": "Galpão CAF - Insumos e Descartáveis",
+            "neighborhood": "Bela Vista",
+            "city": "São Paulo",
+            "state": "SP",
+            "zipCode": "01310-200",
+            "country": "Brasil",
+            "isDefault": true,
+            "createdAt": "2026-09-24T14:33:51.777Z"
+          }
+        ],
+        "notes": "Cliente Direto da Fábrica (B2B / Sem Site) - Atendimento via Televendas, Representante ou Contrato Fabril."
+      },
+      "deliveryAddress": {
+        "id": "addr-del-cust-1-muefguhk",
+        "customerId": "cust-1",
+        "type": "DELIVERY",
+        "street": "Av. Paulista",
+        "number": "1842",
+        "complement": "Galpão CAF - Insumos e Descartáveis",
+        "neighborhood": "Bela Vista",
+        "city": "São Paulo",
+        "state": "SP",
+        "zipCode": "01310-200",
+        "country": "Brasil",
+        "isDefault": true,
+        "createdAt": "2026-09-23T18:19:46.904Z"
+      }
+    },
+    {
+      "id": "ord-tray-TEST-ORD-1790260431774",
+      "orderNumber": "#TEST-ORD-1790260431774",
+      "externalId": "TRAY-ORD-TEST-ORD-1790260431774",
+      "source": "TRAY",
+      "customerId": "cust-1",
+      "deliveryAddressId": "addr-del-cust-1-mufmu5y9",
+      "status": "NEW",
+      "totalAmount": 7850,
+      "subtotal": 7500,
+      "shippingCost": 120,
+      "discount": 0,
+      "paymentMethod": "BOLETO_BANCARIO",
+      "paymentStatus": "PAID",
+      "items": [
+        {
+          "id": "item-TEST-ORD-1790260431774-1",
+          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "productId": "8820",
+          "sku": "FLIND-TOALET-CX6",
+          "title": "Saco de Urina, Vômito, Enjoo - Caixa com 6 Toalet Descartável Flind",
+          "quantity": 50,
+          "unitPrice": 65.15,
+          "totalPrice": 3257.5000000000005,
+          "weightKg": 12
+        },
+        {
+          "id": "item-TEST-ORD-1790260431774-2",
+          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "productId": "8821",
+          "sku": "FLIND-MSC-TRIP-MEDIX",
+          "title": "Máscara Tripla Descartável Medix - Cx c/ 50 un",
+          "quantity": 30,
+          "unitPrice": 7.75,
+          "totalPrice": 232.5,
+          "weightKg": 4.5
+        }
+      ],
+      "timeline": [
+        {
+          "id": "tl-tray-TEST-ORD-1790260431774-1",
+          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "stage": "ORDER_RECEIVED",
+          "stageLabel": "Pedido Recebido",
+          "status": "COMPLETED",
+          "startedAt": "2026-09-24T14:33:51.777Z",
+          "completedAt": "2026-09-24T14:33:51.777Z",
+          "durationMinutes": 1,
+          "expectedSlaMinutes": 10,
+          "responsible": "Tray Webhook Sync",
+          "sourceSystem": "TRAY",
+          "notes": "Importado da Tray E-commerce via webhook (order.created). Total: R$ 7850."
+        },
+        {
+          "id": "tl-tray-TEST-ORD-1790260431774-2",
+          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "stage": "ERP_INTEGRATED",
+          "stageLabel": "Integrado ao ERP",
+          "status": "IN_PROGRESS",
+          "startedAt": "2026-09-24T14:33:51.777Z",
+          "expectedSlaMinutes": 30,
+          "responsible": "SINK ERP Queue Worker",
+          "sourceSystem": "SINK_ERP",
+          "notes": "Encaminhado para a fila de sincronização com o SINK ERP."
+        },
+        {
+          "id": "tl-tray-TEST-ORD-1790260431774-3",
+          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "stage": "SEPARATION",
+          "stageLabel": "Separação",
+          "status": "PENDING",
+          "expectedSlaMinutes": 120,
+          "sourceSystem": "FABRICA_INTEGRADA"
+        },
+        {
+          "id": "tl-tray-TEST-ORD-1790260431774-4",
+          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "stage": "INVOICING",
+          "stageLabel": "Faturamento",
+          "status": "PENDING",
+          "expectedSlaMinutes": 240,
+          "sourceSystem": "SINK_ERP"
+        },
+        {
+          "id": "tl-tray-TEST-ORD-1790260431774-5",
+          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "stage": "NFE_ISSUED",
+          "stageLabel": "NF-e Emitida",
+          "status": "PENDING",
+          "expectedSlaMinutes": 15,
+          "sourceSystem": "SINK_ERP"
+        },
+        {
+          "id": "tl-tray-TEST-ORD-1790260431774-6",
+          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "stage": "EXPEDITION",
+          "stageLabel": "Expedição & Etiquetagem",
+          "status": "PENDING",
+          "expectedSlaMinutes": 480,
+          "sourceSystem": "FABRICA_INTEGRADA"
+        },
+        {
+          "id": "tl-tray-TEST-ORD-1790260431774-7",
+          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "stage": "CARRIER_DISPATCH",
+          "stageLabel": "Coleta Transportadora",
+          "status": "PENDING",
+          "expectedSlaMinutes": 360,
+          "sourceSystem": "TRANSPORTADORA"
+        },
+        {
+          "id": "tl-tray-TEST-ORD-1790260431774-8",
+          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "stage": "IN_TRANSIT",
+          "stageLabel": "Em Trânsito",
+          "status": "PENDING",
+          "expectedSlaMinutes": 1440,
+          "sourceSystem": "TRANSPORTADORA"
+        },
+        {
+          "id": "tl-tray-TEST-ORD-1790260431774-9",
+          "orderId": "ord-tray-TEST-ORD-1790260431774",
+          "stage": "DELIVERED",
+          "stageLabel": "Entregue ao Cliente",
+          "status": "PENDING",
+          "expectedSlaMinutes": 2880,
+          "sourceSystem": "TRANSPORTADORA"
+        }
+      ],
+      "createdAt": "2026-09-24T14:33:51.777Z",
+      "updatedAt": "2026-09-24T14:33:51.777Z"
     }
   ],
   "slaRules": [
@@ -1612,6 +1896,18 @@
     }
   ],
   "alerts": [
+    {
+      "id": "alt-sla-ord-tray-TEST-ORD-1790187586902-ERP_INTEGRATED",
+      "severity": "CRITICAL",
+      "type": "SLA_BREACH",
+      "entityType": "ORDER",
+      "entityId": "ord-tray-TEST-ORD-1790187586902",
+      "message": "Etapa \"Integrado ao ERP\" do Pedido #TEST-ORD-1790187586902 ultrapassou o SLA de 30 min (tempo atual: 1158 min, atraso: +1128 min).",
+      "ruleResponsible": "Pedido Recebido → Integração ERP",
+      "responsible": "SINK ERP Queue Worker",
+      "status": "PENDING",
+      "createdAt": "2026-09-24T13:37:49.371Z"
+    },
     {
       "id": "alt-rec-overdue-rec-105",
       "severity": "CRITICAL",
@@ -1780,13 +2076,14 @@
       "invoiceNumber": "NF-004789",
       "amount": 14200,
       "dueDate": "2026-09-20",
-      "status": "OVERDUE",
+      "status": "PAID",
       "paymentMethod": "BOLETO",
       "externalId": "SINK-DUP-10388",
       "source": "SINK_ERP",
       "createdAt": "2026-08-21",
-      "updatedAt": "2026-09-22T18:25:42.000Z",
-      "autoCleared": false
+      "updatedAt": "2026-09-24T14:33:51.801Z",
+      "autoCleared": false,
+      "paymentDate": "2026-09-24"
     },
     {
       "id": "rec-104",
@@ -1921,6 +2218,27 @@
       "transactionCode": "TRAY-PAY-TEST-ORD-1790187586902",
       "createdAt": "2026-09-23T18:19:46.904Z",
       "updatedAt": "2026-09-23T18:19:46.904Z"
+    },
+    {
+      "id": "rec-tray-TEST-ORD-1790260431774",
+      "customerId": "cust-1",
+      "customerName": "Distribuidora Metalúrgica Aliança Ltda",
+      "orderId": "ord-tray-TEST-ORD-1790260431774",
+      "orderNumber": "#TEST-ORD-1790260431774",
+      "documentNumber": "DUP-TRAY-TEST-ORD-1790260431774",
+      "invoiceNumber": "NF-TEST-ORD-1790260431774",
+      "amount": 7850,
+      "dueDate": "2026-09-24",
+      "paymentDate": "2026-09-24",
+      "status": "PAID",
+      "paymentMethod": "BOLETO_BANCARIO",
+      "source": "TRAY",
+      "autoCleared": true,
+      "autoClearedAt": "2026-09-24T14:33:51.777Z",
+      "clearingChannel": "TRAY",
+      "transactionCode": "TRAY-PAY-TEST-ORD-1790260431774",
+      "createdAt": "2026-09-24T14:33:51.777Z",
+      "updatedAt": "2026-09-24T14:33:51.777Z"
     }
   ],
   "collectionRules": [
@@ -2017,6 +2335,114 @@
     }
   ],
   "whatsappLogs": [
+    {
+      "id": "wlog-1790260431869-cp0w",
+      "recipientPhone": "+55 11 98888-9999",
+      "customerName": "Cliente Teste",
+      "templateName": "lembrete_fatura_vencimento",
+      "parameters": {
+        "cliente": "Cliente Teste",
+        "numero": "NF-9999",
+        "valor": "R$ 1.500,00",
+        "data": "2026-10-01",
+        "dados_pagamento": "PIX: teste@pix.com"
+      },
+      "status": "READ",
+      "providerMessageId": "wamid.HBgL5511988889999MRIAmufmu60t",
+      "sentAt": "2026-09-24T14:33:51.869Z",
+      "deliveredAt": "2026-09-24T14:33:53.869Z",
+      "direction": "OUTBOUND",
+      "createdAt": "2026-09-24T14:33:51.869Z",
+      "readAt": "2026-09-24T14:33:51.000Z"
+    },
+    {
+      "id": "wlog-1790257104058-wcy2",
+      "recipientPhone": "+55 11 98452-1100",
+      "customerName": "Metalúrgica Aliança Ltda",
+      "receivableId": "rec-106",
+      "templateName": "cobranca_diaria_atraso",
+      "parameters": {
+        "cliente": "Metalúrgica Aliança Ltda",
+        "numero": "DUP-4800-01",
+        "valor": "R$ 9.800,00",
+        "data": "22/09/2026",
+        "dados_pagamento": "Consulte o portal financeiro para emissão da 2ª via.",
+        "dias_atraso": "2 dia(s)",
+        "aviso": "Título vencido há 2 dia(s). Regularize via Pix para liberação imediata."
+      },
+      "status": "SENT",
+      "providerMessageId": "wamid.HBgL5511984521100MRIAmufkuu9m",
+      "sentAt": "2026-09-24T13:38:24.058Z",
+      "deliveredAt": "2026-09-24T13:38:26.058Z",
+      "direction": "OUTBOUND",
+      "createdAt": "2026-09-24T13:38:24.058Z"
+    },
+    {
+      "id": "wlog-1790257104058-z34i",
+      "recipientPhone": "+55 31 99876-5432",
+      "customerName": "Roberto Silveira Ferramentas ME",
+      "receivableId": "rec-105",
+      "templateName": "cobranca_diaria_atraso",
+      "parameters": {
+        "cliente": "Roberto Silveira Ferramentas ME",
+        "numero": "DUP-4500-01",
+        "valor": "R$ 6.780,00",
+        "data": "11/08/2026",
+        "dados_pagamento": "Consulte o portal financeiro para emissão da 2ª via.",
+        "dias_atraso": "44 dia(s)",
+        "aviso": "Título vencido há 44 dia(s). Regularize via Pix para liberação imediata."
+      },
+      "status": "SENT",
+      "providerMessageId": "wamid.HBgL5531998765432MRIAmufkuu9m",
+      "sentAt": "2026-09-24T13:38:24.058Z",
+      "deliveredAt": "2026-09-24T13:38:26.058Z",
+      "direction": "OUTBOUND",
+      "createdAt": "2026-09-24T13:38:24.058Z"
+    },
+    {
+      "id": "wlog-1790257104058-h20z",
+      "recipientPhone": "+55 31 99876-5432",
+      "customerName": "Roberto Silveira Ferramentas ME",
+      "receivableId": "rec-104",
+      "templateName": "cobranca_diaria_atraso",
+      "parameters": {
+        "cliente": "Roberto Silveira Ferramentas ME",
+        "numero": "DUP-4620-01",
+        "valor": "R$ 5.400,00",
+        "data": "07/09/2026",
+        "dados_pagamento": "Consulte o portal financeiro para emissão da 2ª via.",
+        "dias_atraso": "17 dia(s)",
+        "aviso": "Título vencido há 17 dia(s). Regularize via Pix para liberação imediata."
+      },
+      "status": "SENT",
+      "providerMessageId": "wamid.HBgL5531998765432MRIAmufkuu9m",
+      "sentAt": "2026-09-24T13:38:24.058Z",
+      "deliveredAt": "2026-09-24T13:38:26.058Z",
+      "direction": "OUTBOUND",
+      "createdAt": "2026-09-24T13:38:24.058Z"
+    },
+    {
+      "id": "wlog-1790257104057-mzap",
+      "recipientPhone": "+55 19 97123-4567",
+      "customerName": "Embalagens Progresso S/A",
+      "receivableId": "rec-103",
+      "templateName": "cobranca_diaria_atraso",
+      "parameters": {
+        "cliente": "Embalagens Progresso S/A",
+        "numero": "DUP-4789-01",
+        "valor": "R$ 14.200,00",
+        "data": "20/09/2026",
+        "dados_pagamento": "Consulte o portal financeiro para emissão da 2ª via.",
+        "dias_atraso": "4 dia(s)",
+        "aviso": "Título vencido há 4 dia(s). Regularize via Pix para liberação imediata."
+      },
+      "status": "SENT",
+      "providerMessageId": "wamid.HBgL5519971234567MRIAmufkuu9l",
+      "sentAt": "2026-09-24T13:38:24.057Z",
+      "deliveredAt": "2026-09-24T13:38:26.057Z",
+      "direction": "OUTBOUND",
+      "createdAt": "2026-09-24T13:38:24.057Z"
+    },
     {
       "id": "wlog-1790187586995-88oo",
       "recipientPhone": "+55 11 98888-9999",
@@ -2396,6 +2822,164 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "aud-1790260431869",
+      "action": "WHATSAPP_MESSAGE_SENT",
+      "origin": "WhatsAppProvider.sendTemplateMessage",
+      "entity": "WhatsAppMessageLog",
+      "entityId": "wlog-1790260431869-cp0w",
+      "newValue": {
+        "template": "lembrete_fatura_vencimento",
+        "recipient": "+55 11 98888-9999",
+        "isSandbox": true
+      },
+      "userOrService": "CollectionAutomationService",
+      "correlationId": "corr-wpp-1790260431869",
+      "createdAt": "2026-09-24T14:33:51.869Z"
+    },
+    {
+      "id": "aud-1790260431777",
+      "action": "TRAY_ORDER_SYNCED",
+      "origin": "TrayAdapter.handleWebhook",
+      "entity": "Order",
+      "entityId": "ord-tray-TEST-ORD-1790260431774",
+      "newValue": {
+        "orderNumber": "#TEST-ORD-1790260431774",
+        "totalAmount": 7850,
+        "customer": "Distribuidora Metalúrgica Aliança Ltda"
+      },
+      "userOrService": "Tray Webhook Service",
+      "correlationId": "corr-test-1",
+      "createdAt": "2026-09-24T14:33:51.777Z"
+    },
+    {
+      "id": "aud-imp-1790260431274",
+      "action": "INVENTORY_IMPORTED_EXCEL",
+      "origin": "DatabaseManager.importInventoryItems",
+      "entity": "ProductInventory",
+      "entityId": "BATCH_IMPORT",
+      "newValue": {
+        "totalProcessed": 1,
+        "createdCount": 0,
+        "updatedCount": 1,
+        "unchangedCount": 0,
+        "totalPackagesUpdated": 165,
+        "totalUnitsCalculated": 8250,
+        "autoOrdersTriggeredCount": 0
+      },
+      "userOrService": "Importação Planilha XLSX",
+      "correlationId": "corr-imp-1790260431274",
+      "createdAt": "2026-09-24T14:33:51.273Z"
+    },
+    {
+      "id": "aud-po-clear-cancel-1790259248752",
+      "action": "CANCELLED_PURCHASE_ORDERS_CLEARED",
+      "origin": "DatabaseManager.clearCancelledPurchaseOrders",
+      "entity": "PurchaseOrder",
+      "entityId": "ALL_CANCELLED",
+      "newValue": {
+        "clearedCount": 1,
+        "message": "Histórico de ordens de compra canceladas limpo pelo usuário."
+      },
+      "userOrService": "Gestor de Compras e Suprimentos",
+      "correlationId": "corr-po-clear-1790259248752",
+      "createdAt": "2026-09-24T14:14:08.752Z"
+    },
+    {
+      "id": "aud-po-cancel-1790259236715",
+      "action": "PURCHASE_ORDER_CANCELLED",
+      "origin": "DatabaseManager.cancelPurchaseOrder",
+      "entity": "PurchaseOrder",
+      "entityId": "po-quot-1790174961124",
+      "newValue": {
+        "orderNumber": "PO-FLIND-2026-004",
+        "supplierName": "Fitesa Hospitalar",
+        "productName": "Máscara Cirúrgica Tripla com Tiras BFE≥95%",
+        "status": "CANCELLED",
+        "reason": "Cancelamento de teste"
+      },
+      "userOrService": "Gestor de Compras e Suprimentos",
+      "correlationId": "corr-po-cancel-1790259236715",
+      "createdAt": "2026-09-24T14:13:56.715Z"
+    },
+    {
+      "id": "aud-po-clear-cancel-1790259231248",
+      "action": "CANCELLED_PURCHASE_ORDERS_CLEARED",
+      "origin": "DatabaseManager.clearCancelledPurchaseOrders",
+      "entity": "PurchaseOrder",
+      "entityId": "ALL_CANCELLED",
+      "newValue": {
+        "clearedCount": 0,
+        "message": "Histórico de ordens de compra canceladas limpo pelo usuário."
+      },
+      "userOrService": "Gestor de Compras e Suprimentos",
+      "correlationId": "corr-po-clear-1790259231248",
+      "createdAt": "2026-09-24T14:13:51.248Z"
+    },
+    {
+      "id": "aud-1790257104058",
+      "action": "WHATSAPP_MESSAGE_SENT",
+      "origin": "WhatsAppProvider.sendTemplateMessage",
+      "entity": "WhatsAppMessageLog",
+      "entityId": "wlog-1790257104058-wcy2",
+      "newValue": {
+        "template": "cobranca_diaria_atraso",
+        "recipient": "+55 11 98452-1100",
+        "receivableId": "rec-106",
+        "isSandbox": true
+      },
+      "userOrService": "CollectionAutomationService",
+      "correlationId": "corr-wpp-1790257104058",
+      "createdAt": "2026-09-24T13:38:24.058Z"
+    },
+    {
+      "id": "aud-1790257104058",
+      "action": "WHATSAPP_MESSAGE_SENT",
+      "origin": "WhatsAppProvider.sendTemplateMessage",
+      "entity": "WhatsAppMessageLog",
+      "entityId": "wlog-1790257104058-z34i",
+      "newValue": {
+        "template": "cobranca_diaria_atraso",
+        "recipient": "+55 31 99876-5432",
+        "receivableId": "rec-105",
+        "isSandbox": true
+      },
+      "userOrService": "CollectionAutomationService",
+      "correlationId": "corr-wpp-1790257104058",
+      "createdAt": "2026-09-24T13:38:24.058Z"
+    },
+    {
+      "id": "aud-1790257104058",
+      "action": "WHATSAPP_MESSAGE_SENT",
+      "origin": "WhatsAppProvider.sendTemplateMessage",
+      "entity": "WhatsAppMessageLog",
+      "entityId": "wlog-1790257104058-h20z",
+      "newValue": {
+        "template": "cobranca_diaria_atraso",
+        "recipient": "+55 31 99876-5432",
+        "receivableId": "rec-104",
+        "isSandbox": true
+      },
+      "userOrService": "CollectionAutomationService",
+      "correlationId": "corr-wpp-1790257104058",
+      "createdAt": "2026-09-24T13:38:24.058Z"
+    },
+    {
+      "id": "aud-1790257104057",
+      "action": "WHATSAPP_MESSAGE_SENT",
+      "origin": "WhatsAppProvider.sendTemplateMessage",
+      "entity": "WhatsAppMessageLog",
+      "entityId": "wlog-1790257104057-mzap",
+      "newValue": {
+        "template": "cobranca_diaria_atraso",
+        "recipient": "+55 19 97123-4567",
+        "receivableId": "rec-103",
+        "isSandbox": true
+      },
+      "userOrService": "CollectionAutomationService",
+      "correlationId": "corr-wpp-1790257104057",
+      "createdAt": "2026-09-24T13:38:24.057Z"
+    },
     {
       "id": "aud-1790187586995",
       "action": "WHATSAPP_MESSAGE_SENT",
@@ -2928,6 +3512,23 @@
   ],
   "integrationLogs": [
     {
+      "id": "intlog-1790260431777",
+      "integration": "TRAY",
+      "eventType": "order.created",
+      "externalId": "TEST-ORD-1790260431774",
+      "idempotencyKey": "tray:order:TEST-ORD-1790260431774:order.created",
+      "status": "SUCCESS",
+      "attempts": 2,
+      "payloadOriginal": {
+        "event": "order.created",
+        "scope_id": "991",
+        "act": "order_create",
+        "order_id": "TEST-ORD-1790260431774"
+      },
+      "createdAt": "2026-09-24T14:33:51.777Z",
+      "updatedAt": "2026-09-24T14:33:51.777Z"
+    },
+    {
       "id": "intlog-1790187586905",
       "integration": "TRAY",
       "eventType": "order.created",
@@ -3020,8 +3621,8 @@
       "expiryDate": "2029-08-10",
       "shelfLifeMonths": 36,
       "lotNumber": "LOTE-FLIND-2026-A19",
-      "currentStockPackages": 140,
-      "currentStockUnits": 7000,
+      "currentStockPackages": 165,
+      "currentStockUnits": 8250,
       "minStockPackages": 60,
       "minStockUnits": 3000,
       "reorderQuantityPackages": 80,
@@ -3035,7 +3636,7 @@
       "autoReorderEnabled": true,
       "lastRestockAt": "2026-09-07T10:00:00.000Z",
       "createdAt": "2026-08-03T10:00:00.000Z",
-      "updatedAt": "2026-09-21T10:00:00.000Z",
+      "updatedAt": "2026-09-24T14:33:51.273Z",
       "barcode": "7898956000101",
       "material": "TNT SMS 100% Polipropileno Tripla Camada (Spunbond-Meltblown-Spunbond)",
       "technicalSpecs": "Tecido não-tecido cirúrgico hidrorrepelente, atóxico, hipoalergênico, barreira bacteriana BFE ≥ 99%, solda ultrassônica e fechamento por tiras ajustáveis.",
@@ -3250,6 +3851,26 @@
   ],
   "suppliers": [
     {
+      "id": "supp-1790259223719",
+      "name": "Fornecedor Teste Vercel Ltda",
+      "tradeName": "Fornecedor Teste Vercel Ltda",
+      "taxId": "12.345.678/0001-00",
+      "stateRegistration": "Isento",
+      "contactName": "Responsável Comercial",
+      "phone": "+5511999998888",
+      "whatsapp": "+5511999998888",
+      "email": "comercial@fornecedor.com.br",
+      "category": "Insumos Cirúrgicos",
+      "leadTimeDays": 3,
+      "city": "São Paulo",
+      "state": "SP",
+      "paymentTerms": "30 DDL",
+      "status": "HOMOLOGATED",
+      "notes": "",
+      "suppliedProductsCount": 0,
+      "createdAt": "2026-09-24T14:13:43.719Z"
+    },
+    {
       "id": "supp-1",
       "name": "Fibras & Não-Tecidos Brasil S/A",
       "tradeName": "TNT Brasil Matérias-Primas",
@@ -3328,27 +3949,6 @@
   ],
   "purchaseOrders": [
     {
-      "id": "po-quot-1790174961124",
-      "orderNumber": "PO-FLIND-2026-004",
-      "supplierId": "supp-alt-fit",
-      "supplierName": "Fitesa Hospitalar",
-      "supplierWhatsapp": "+5519984112299",
-      "productId": "prod-102",
-      "productSku": "FLIND-MSC-TRIP-TIR",
-      "productName": "Máscara Cirúrgica Tripla com Tiras BFE≥95%",
-      "quantityPackages": 30,
-      "quantityUnits": 60000,
-      "packagingUnit": "Fardo (FD)",
-      "estimatedCost": 1360.8,
-      "triggerReason": "AUTO_LOW_STOCK",
-      "status": "SENT_WHATSAPP",
-      "whatsappMessageId": "quot.WA5519984112299-mue7y8dg",
-      "notes": "Aprovado pelo comparativo",
-      "expectedDeliveryDate": "2026-09-25",
-      "createdAt": "2026-09-23T14:49:21.124Z",
-      "updatedAt": "2026-09-23T14:49:21.124Z"
-    },
-    {
       "id": "po-1790108084189",
       "orderNumber": "PO-FLIND-2026-003",
       "supplierId": "supp-1",
@@ -3416,5 +4016,6 @@
     "autoWhatsAppExpedition": true,
     "autoWhatsAppCollection": true,
     "autoWhatsAppLowStock": true
-  }
+  },
+  "cancelledPurchaseOrders": []
 }
