@@ -1727,39 +1727,50 @@ apiRouter.get('/inventory/export-xlsx', (req: Request, res: Response) => {
 // Prévia de leitura de arquivo XLSX (sem salvar no banco)
 apiRouter.post('/inventory/preview-xlsx', (req: Request, res: Response) => {
   try {
-    const { base64, fileName } = req.body;
-    if (!base64) {
+    const { base64, rows, fileName } = req.body || {};
+
+    let parsedRows: any[] = [];
+    let sheetName = 'Planilha';
+    let detectedColumns: Record<string, string> = {};
+    let errors: string[] = [];
+
+    if (Array.isArray(rows) && rows.length > 0) {
+      parsedRows = rows;
+    } else if (base64) {
+      // Limpa prefixo de data URI caso enviado e remove quebras de linha / espaços
+      const cleanBase64 = String(base64)
+        .replace(/^data:[^;]+;base64,/, '')
+        .replace(/\s+/g, '');
+
+      const buffer = Buffer.from(cleanBase64, 'base64');
+      if (!buffer || buffer.length === 0) {
+        return res.status(400).json({ error: 'Arquivo recebido está corrompido ou vazio.' });
+      }
+
+      const workbook = XLSX.read(buffer, { type: 'buffer', cellDates: true, raw: false });
+      const parseResult = parseExcelWorkbook(workbook);
+      sheetName = parseResult.sheetName;
+      detectedColumns = parseResult.detectedColumns;
+      errors = parseResult.errors;
+
+      if (!parseResult.success || parseResult.rows.length === 0) {
+        return res.status(400).json({
+          error: parseResult.errors[0] || 'Nenhum produto válido foi identificado na planilha.',
+          details: parseResult.errors,
+        });
+      }
+      parsedRows = parseResult.rows;
+    } else {
       return res.status(400).json({ error: 'Nenhum dado ou arquivo recebido para leitura.' });
-    }
-
-    // Limpa prefixo de data URI caso enviado e remove quebras de linha / espaços
-    const cleanBase64 = String(base64)
-      .replace(/^data:[^;]+;base64,/, '')
-      .replace(/\s+/g, '');
-
-    const buffer = Buffer.from(cleanBase64, 'base64');
-    if (!buffer || buffer.length === 0) {
-      return res.status(400).json({ error: 'Arquivo recebido está corrompido ou vazio.' });
-    }
-
-    const workbook = XLSX.read(buffer, { type: 'buffer', cellDates: true, raw: false });
-    const parseResult = parseExcelWorkbook(workbook);
-    parseResult.fileName = fileName;
-
-    if (!parseResult.success || parseResult.rows.length === 0) {
-      return res.status(400).json({
-        error: parseResult.errors[0] || 'Nenhum produto válido foi identificado na planilha.',
-        details: parseResult.errors,
-      });
     }
 
     // Cruza com itens atuais do banco para gerar relatório prévio de atualização vs criação
     const currentProducts = db.getProducts();
-    const previewComparison = parseResult.rows.map((row) => {
+    const previewComparison = parsedRows.map((row) => {
       const match = currentProducts.find(
         (p) =>
-          p.sku.toLowerCase() === row.sku.toLowerCase() ||
-          (row.name && p.name.toLowerCase() === row.name.toLowerCase())
+          p.sku.toLowerCase() === String(row.sku || '').toLowerCase() ||
+          (row.name && p.name.toLowerCase() === String(row.name || '').toLowerCase())
       );
       return {
         ...row,
@@ -1780,9 +1791,18 @@ apiRouter.post('/inventory/preview-xlsx', (req: Request, res: Response) => {
 
     const willUpdateCount = previewComparison.filter((p) => p.action === 'UPDATE').length;
     const willCreateCount = previewComparison.filter((p) => p.action === 'CREATE').length;
+    const validRowsCount = previewComparison.filter((p) => p.isValid !== false).length;
+    const invalidRowsCount = previewComparison.filter((p) => p.isValid === false).length;
 
     res.json({
-      ...parseResult,
+      success: true,
+      fileName: fileName || 'planilha.xlsx',
+      sheetName,
+      totalRows: previewComparison.length,
+      validRowsCount,
+      invalidRowsCount,
+      detectedColumns,
+      errors,
       rows: previewComparison,
       willUpdateCount,
       willCreateCount,
@@ -1798,7 +1818,7 @@ apiRouter.post('/inventory/preview-xlsx', (req: Request, res: Response) => {
 // Importação e gravação definitiva de estoque e volumes via XLSX
 apiRouter.post('/inventory/import-xlsx', (req: Request, res: Response) => {
   try {
-    const { base64, rows, mode, triggerAutoReorder, fileName } = req.body;
+    const { base64, rows, mode, triggerAutoReorder, fileName } = req.body || {};
 
     let itemsToImport: InventoryImportRow[] = [];
 

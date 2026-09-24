@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import * as XLSX from 'xlsx';
+import { parseExcelWorkbook } from '../server/services/excel-inventory-service';
 import {
   FileSpreadsheet,
   Upload,
@@ -101,7 +103,7 @@ export const ExcelInventoryImportModal: React.FC<ExcelInventoryImportModalProps>
     }
   };
 
-  const processSelectedFile = (fileToProcess: File) => {
+  const processSelectedFile = async (fileToProcess: File) => {
     setErrorMsg(null);
     setPreviewData(null);
     setImportResult(null);
@@ -116,52 +118,101 @@ export const ExcelInventoryImportModal: React.FC<ExcelInventoryImportModalProps>
     setFile(fileToProcess);
     setLoadingPreview(true);
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      try {
-        const base64 = reader.result as string;
-        setBase64Data(base64);
+    try {
+      // 1. Leitura local ultrarrápida no navegador (evita timeout de 500 no Vercel Serverless)
+      const arrayBuffer = await fileToProcess.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true, raw: false });
+      const localParsed = parseExcelWorkbook(workbook);
 
+      if (!localParsed.success || localParsed.rows.length === 0) {
+        throw new Error(
+          localParsed.errors[0] || 'Nenhum item ou volume legível encontrado na planilha.'
+        );
+      }
+
+      // 2. Converte base64 para backup/compatibilidade
+      const reader = new FileReader();
+      reader.onload = () => {
+        setBase64Data(reader.result as string);
+      };
+      reader.readAsDataURL(fileToProcess);
+
+      // 3. Solicita comparação inteligente ao backend enviando as linhas parseadas
+      let previewResult: PreviewData | null = null;
+      try {
         const res = await fetch('/api/inventory/preview-xlsx', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            base64,
+            rows: localParsed.rows,
             fileName: fileToProcess.name,
           }),
         });
 
-        let data: any;
-        const textResponse = await res.text();
-        try {
-          data = JSON.parse(textResponse);
-        } catch {
-          throw new Error(
-            res.status === 413
-              ? 'O arquivo é muito grande para o limite do servidor.'
-              : `Erro no servidor (${res.status}): ${textResponse.slice(0, 150)}`
-          );
+        if (res.ok) {
+          const data = await res.json();
+          previewResult = data;
         }
-
-        if (!res.ok) {
-          throw new Error(data.error || data.message || 'Falha ao processar arquivo.');
-        }
-
-        setPreviewData(data);
-      } catch (err: any) {
-        console.error('Erro na leitura da planilha:', err);
-        setErrorMsg(err.message || 'Erro ao processar o arquivo selecionado.');
-      } finally {
-        setLoadingPreview(false);
+      } catch (err) {
+        console.warn('Backend preview falhou, utilizando comparação local:', err);
       }
-    };
 
-    reader.onerror = () => {
-      setErrorMsg('Falha ao ler o arquivo no navegador.');
+      // 4. Se o endpoint falhou (ex: Vercel serverless 500), cruza os dados localmente
+      if (!previewResult) {
+        let existingProducts: any[] = [];
+        try {
+          const prodRes = await fetch('/api/products/catalog');
+          if (prodRes.ok) {
+            const prodData = await prodRes.json();
+            existingProducts = prodData.products || [];
+          }
+        } catch {}
+
+        const comparisonRows: PreviewRow[] = localParsed.rows.map((row) => {
+          const match = existingProducts.find(
+            (p) =>
+              p.sku.toLowerCase() === row.sku.toLowerCase() ||
+              (row.name && p.name.toLowerCase() === row.name.toLowerCase())
+          );
+          return {
+            ...row,
+            action: match ? 'UPDATE' : 'CREATE',
+            existingProduct: match
+              ? {
+                  id: match.id,
+                  name: match.name,
+                  currentStockPackages: match.currentStockPackages,
+                  currentStockUnits: match.currentStockUnits,
+                  packagingUnit: match.packagingUnit,
+                  unitsPerPackage: match.unitsPerPackage,
+                  status: match.status,
+                }
+              : undefined,
+          };
+        });
+
+        previewResult = {
+          success: true,
+          fileName: fileToProcess.name,
+          sheetName: localParsed.sheetName,
+          totalRows: comparisonRows.length,
+          validRowsCount: comparisonRows.filter((r) => r.isValid).length,
+          invalidRowsCount: comparisonRows.filter((r) => !r.isValid).length,
+          willUpdateCount: comparisonRows.filter((r) => r.action === 'UPDATE').length,
+          willCreateCount: comparisonRows.filter((r) => r.action === 'CREATE').length,
+          detectedColumns: localParsed.detectedColumns,
+          rows: comparisonRows,
+          errors: localParsed.errors,
+        };
+      }
+
+      setPreviewData(previewResult);
+    } catch (err: any) {
+      console.error('Erro na leitura da planilha:', err);
+      setErrorMsg(err.message || 'Erro ao processar o arquivo selecionado.');
+    } finally {
       setLoadingPreview(false);
-    };
-
-    reader.readAsDataURL(fileToProcess);
+    }
   };
 
   const handleExecuteImport = async () => {
@@ -175,7 +226,6 @@ export const ExcelInventoryImportModal: React.FC<ExcelInventoryImportModalProps>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          base64: base64Data,
           rows: previewData.rows,
           fileName: file?.name,
           mode: importMode,
