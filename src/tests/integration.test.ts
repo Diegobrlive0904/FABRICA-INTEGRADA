@@ -183,4 +183,43 @@ describe('FÁBRICA INTEGRADA - SUITE DE TESTES OPERACIONAIS', () => {
     assert.ok(log);
     assert.strictEqual(log.status, 'READ');
   });
+
+  // 9. GESTÃO E EXCLUSÃO DE FORNECEDOR
+  test('Fornecedores: Deve cadastrar e permitir exclusão de fornecedor com desvinculação segura', () => {
+    const newSupp = db.upsertSupplier({
+      id: `supp-test-del-${Date.now()}`,
+      name: 'Fornecedor Teste Temporário Ltda',
+      tradeName: 'Fornecedor Temporário',
+      taxId: '99.888.777/0001-66',
+      stateRegistration: 'Isento',
+      contactName: 'Carlos Contato',
+      phone: '+55 11 98765-4321',
+      whatsapp: '+55 11 98765-4321',
+      email: 'temporario@fornecedor.com.br',
+      category: 'Embalagens',
+      leadTimeDays: 4,
+      city: 'Campinas',
+      state: 'SP',
+      paymentTerms: '30 DDL',
+      status: 'HOMOLOGATED',
+      notes: 'Fornecedor criado para teste de exclusão',
+      suppliedProductsCount: 0,
+      createdAt: new Date().toISOString(),
+    });
+
+    assert.ok(db.getSupplierById(newSupp.id));
+
+    // Executa exclusão
+    const delResult = db.deleteSupplier(newSupp.id);
+    assert.strictEqual(delResult.success, true);
+    assert.strictEqual(delResult.deletedSupplier?.id, newSupp.id);
+
+    // Não deve mais existir na base
+    assert.strictEqual(db.getSupplierById(newSupp.id), undefined);
+
+    // Tentar excluir novamente deve retornar erro controlado
+    const retryDel = db.deleteSupplier(newSupp.id);
+    assert.strictEqual(retryDel.success, false);
+    assert.strictEqual(retryDel.error, 'Fornecedor não encontrado.');
+  });
 });

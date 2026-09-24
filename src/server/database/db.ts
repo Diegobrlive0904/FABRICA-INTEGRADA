@@ -2595,6 +2595,43 @@ class DatabaseManager {
     return supplier;
   }
 
+  public deleteSupplier(id: string): { success: boolean; deletedSupplier?: Supplier; error?: string } {
+    const idx = this.data.suppliers.findIndex((s) => s.id === id);
+    if (idx === -1) {
+      return { success: false, error: 'Fornecedor não encontrado.' };
+    }
+
+    const [deletedSupplier] = this.data.suppliers.splice(idx, 1);
+
+    // Desvincula produtos deste fornecedor ou atualiza fornecedor para não quebrar referências
+    this.data.products.forEach((p) => {
+      if (p.supplierId === id) {
+        p.supplierName = 'Fornecedor Descredenciado / Removido';
+        p.supplierPhone = '';
+      }
+    });
+
+    this.addAuditLog({
+      id: `aud-supp-del-${Date.now()}`,
+      action: 'SUPPLIER_DELETED',
+      origin: 'DatabaseManager.deleteSupplier',
+      entity: 'Supplier',
+      entityId: deletedSupplier.id,
+      newValue: {
+        id: deletedSupplier.id,
+        name: deletedSupplier.name,
+        tradeName: deletedSupplier.tradeName,
+        taxId: deletedSupplier.taxId,
+      },
+      userOrService: 'Gestão de Fornecedores Flind',
+      correlationId: `corr-supp-del-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    });
+
+    this.persist();
+    return { success: true, deletedSupplier };
+  }
+
   // ====================================================
   // MÉTODOS DE ORDENS DE COMPRA / REPOSIÇÃO (PURCHASE ORDERS)
   // ====================================================

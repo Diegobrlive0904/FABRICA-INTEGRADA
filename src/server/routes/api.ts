@@ -1906,6 +1906,30 @@ apiRouter.post('/suppliers', (req: Request, res: Response) => {
   res.status(201).json(saved);
 });
 
+apiRouter.delete('/suppliers/:id', (req: Request, res: Response) => {
+  const result = db.deleteSupplier(req.params.id);
+  if (!result.success) {
+    return res.status(404).json({ error: result.error || 'Fornecedor não encontrado.' });
+  }
+  res.json({
+    success: true,
+    message: `Fornecedor "${result.deletedSupplier?.tradeName || result.deletedSupplier?.name}" excluído com sucesso.`,
+    supplier: result.deletedSupplier,
+  });
+});
+
+apiRouter.post('/suppliers/:id/delete', (req: Request, res: Response) => {
+  const result = db.deleteSupplier(req.params.id);
+  if (!result.success) {
+    return res.status(404).json({ error: result.error || 'Fornecedor não encontrado.' });
+  }
+  res.json({
+    success: true,
+    message: `Fornecedor "${result.deletedSupplier?.tradeName || result.deletedSupplier?.name}" excluído com sucesso.`,
+    supplier: result.deletedSupplier,
+  });
+});
+
 apiRouter.get('/purchase-orders', (req: Request, res: Response) => {
   res.json(db.getPurchaseOrders());
 });

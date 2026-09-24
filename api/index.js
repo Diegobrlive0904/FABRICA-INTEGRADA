@@ -2346,6 +2346,37 @@ var DatabaseManager = class {
     this.persist();
     return supplier;
   }
+  deleteSupplier(id) {
+    const idx = this.data.suppliers.findIndex((s) => s.id === id);
+    if (idx === -1) {
+      return { success: false, error: "Fornecedor n\xE3o encontrado." };
+    }
+    const [deletedSupplier] = this.data.suppliers.splice(idx, 1);
+    this.data.products.forEach((p) => {
+      if (p.supplierId === id) {
+        p.supplierName = "Fornecedor Descredenciado / Removido";
+        p.supplierPhone = "";
+      }
+    });
+    this.addAuditLog({
+      id: `aud-supp-del-${Date.now()}`,
+      action: "SUPPLIER_DELETED",
+      origin: "DatabaseManager.deleteSupplier",
+      entity: "Supplier",
+      entityId: deletedSupplier.id,
+      newValue: {
+        id: deletedSupplier.id,
+        name: deletedSupplier.name,
+        tradeName: deletedSupplier.tradeName,
+        taxId: deletedSupplier.taxId
+      },
+      userOrService: "Gest\xE3o de Fornecedores Flind",
+      correlationId: `corr-supp-del-${Date.now()}`,
+      createdAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    this.persist();
+    return { success: true, deletedSupplier };
+  }
   // ====================================================
   // MÉTODOS DE ORDENS DE COMPRA / REPOSIÇÃO (PURCHASE ORDERS)
   // ====================================================
@@ -7378,6 +7409,28 @@ apiRouter.post("/suppliers", (req, res) => {
   };
   const saved = db.upsertSupplier(supplier);
   res.status(201).json(saved);
+});
+apiRouter.delete("/suppliers/:id", (req, res) => {
+  const result = db.deleteSupplier(req.params.id);
+  if (!result.success) {
+    return res.status(404).json({ error: result.error || "Fornecedor n\xE3o encontrado." });
+  }
+  res.json({
+    success: true,
+    message: `Fornecedor "${result.deletedSupplier?.tradeName || result.deletedSupplier?.name}" exclu\xEDdo com sucesso.`,
+    supplier: result.deletedSupplier
+  });
+});
+apiRouter.post("/suppliers/:id/delete", (req, res) => {
+  const result = db.deleteSupplier(req.params.id);
+  if (!result.success) {
+    return res.status(404).json({ error: result.error || "Fornecedor n\xE3o encontrado." });
+  }
+  res.json({
+    success: true,
+    message: `Fornecedor "${result.deletedSupplier?.tradeName || result.deletedSupplier?.name}" exclu\xEDdo com sucesso.`,
+    supplier: result.deletedSupplier
+  });
 });
 apiRouter.get("/purchase-orders", (req, res) => {
   res.json(db.getPurchaseOrders());
