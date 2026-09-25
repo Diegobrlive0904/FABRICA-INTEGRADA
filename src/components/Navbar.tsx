@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Layers,
   LayoutDashboard,
   ShoppingCart,
   Users,
@@ -100,11 +99,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-2 min-h-16 py-2">
-          <div className="flex items-center gap-2 min-w-0 cursor-pointer" onClick={() => onSelectTab('dashboard')}>
-            <div className="w-9 h-9 shrink-0 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/30">
-              <Layers className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-semibold text-base sm:text-lg tracking-tight text-white truncate">Fábrica Integrada</span>
+          <div className="flex items-center min-w-0 cursor-pointer" onClick={() => onSelectTab('dashboard')}>
+            <img src="/logo-fabrica-integrada.png" alt="Fábrica Integrada" className="h-9 sm:h-11 w-auto max-w-[180px] sm:max-w-[240px] object-contain" />
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
