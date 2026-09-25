@@ -106,13 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Layers className="w-5 h-5 text-white" />
             </div>
             <div>
-              <div className="flex items-center space-x-2">
-                <span className="font-semibold text-lg tracking-tight text-white">Flind</span>
-                <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                  FÁBRICA INTEGRADA
-                </span>
-              </div>
-              <p className="text-xs text-slate-400">Tray E-commerce, SINK ERP & Rastreabilidade de Pedidos</p>
+              <span className="font-semibold text-lg tracking-tight text-white">Fábrica Integrada</span>
             </div>
           </div>
 

@@ -585,15 +585,10 @@ export const InventoryView: React.FC<InventoryViewProps> = ({ onRefreshGlobal })
                         <div className="font-semibold text-slate-800 truncate max-w-[140px]" title={prod.supplierName}>
                           {prod.supplierName}
                         </div>
-                        <a
-                          href={`https://wa.me/${(prod.supplierPhone || '').replace(/\D/g, '')}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[10px] text-emerald-600 hover:text-emerald-700 font-medium flex items-center space-x-1 mt-0.5"
-                        >
+                        <div className="text-[10px] text-emerald-700 font-medium flex items-center space-x-1 mt-0.5">
                           <Phone className="w-2.5 h-2.5" />
-                          <span>{prod.supplierPhone || 'WhatsApp'}</span>
-                        </a>
+                          <span>{prod.supplierPhone || 'WhatsApp simulado'}</span>
+                        </div>
                       </td>
 
                       {/* Ações */}

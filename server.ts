@@ -1,3 +1,4 @@
+import http from 'http';
 import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -37,7 +38,18 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  const server = http.createServer(app);
+  server.on('error', (err: NodeJS.ErrnoException) => {
+    if ((err as NodeJS.ErrnoException & { address?: string }).address === '::') {
+      http.createServer(app).listen(PORT, '0.0.0.0', () => {
+        console.log(`[Fábrica Integrada] Servidor operacional iniciado na porta ${PORT}`);
+      });
+      return;
+    }
+    throw err;
+  });
+  // Escuta em IPv6 e IPv4. No Windows, localhost aponta para ::1.
+  server.listen({ port: PORT, host: '::', ipv6Only: false }, () => {
     console.log(`[Fábrica Integrada] Servidor operacional iniciado na porta ${PORT}`);
 
     // Loop de Automação em Segundo Plano (Verificação a cada 45 segundos)

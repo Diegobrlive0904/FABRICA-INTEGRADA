@@ -130,28 +130,23 @@ export const CustomerRegistrationModal: React.FC<CustomerRegistrationModalProps>
     return digits.slice(0, 8).replace(/^(\d{5})(\d)/, '$1-$2');
   };
 
-  // Busca de CEP automática via ViaCEP
   const handleCepLookup = async (cepInput: string) => {
     const clean = cepInput.replace(/\D/g, '');
     if (clean.length !== 8) return;
 
+    const mockAddresses: Record<string, { street: string; neighborhood: string; city: string; state: string }> = {
+      '01402000': { street: 'Avenida Brigadeiro Luís Antônio', neighborhood: 'Bela Vista', city: 'São Paulo', state: 'SP' },
+      '13025320': { street: 'Avenida José de Souza Campos', neighborhood: 'Cambuí', city: 'Campinas', state: 'SP' },
+      '30112000': { street: 'Rua Fernandes Tourinho', neighborhood: 'Savassi', city: 'Belo Horizonte', state: 'MG' },
+    };
+
     setSearchingCep(true);
-    try {
-      const res = await fetch(`https://viacep.com.br/ws/${clean}/json/`);
-      if (res.ok) {
-        const data = await res.json();
-        if (!data.erro) {
-          setStreet(data.logradouro || '');
-          setNeighborhood(data.bairro || '');
-          setCity(data.localidade || '');
-          setState(data.uf || 'SP');
-        }
-      }
-    } catch (err) {
-      console.warn('ViaCEP offline ou inacessível:', err);
-    } finally {
-      setSearchingCep(false);
-    }
+    const known = mockAddresses[clean];
+    setStreet(known?.street || 'Rua do Protótipo Flind');
+    setNeighborhood(known?.neighborhood || 'Centro');
+    setCity(known?.city || 'São Paulo');
+    setState(known?.state || 'SP');
+    setSearchingCep(false);
   };
 
   // Consulta ao portal www.flind.com.br

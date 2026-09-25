@@ -33,53 +33,15 @@ export class SinkERPProvider implements ERPProvider {
     this.apiUrl = process.env.SINK_ERP_API_URL || '';
     this.apiKey = process.env.SINK_ERP_API_KEY || '';
     this.token = process.env.SINK_ERP_TOKEN || '';
-    this.isConfigured = Boolean(this.apiUrl && (this.apiKey || this.token));
+    this.isConfigured = false;
   }
 
   /**
    * Helper para requisições seguras com timeout e headers
    */
-  private async request(endpoint: string, options: RequestInit = {}): Promise<any> {
-    if (!this.isConfigured) {
-      /* DEPENDS_ON_SINK_OFFICIAL_DOCS: Aguardando SINK_ERP_API_URL e credenciais oficiais */
-      console.warn(
-        `[SinkERPProvider] Integração SINK ERP em modo aguardando documentação oficial. Endpoint solicitado: ${endpoint}`
-      );
-      return null;
-    }
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
-
-    try {
-      const response = await fetch(`${this.apiUrl}${endpoint}`, {
-        ...options,
-        signal: controller.signal,
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          ...(this.apiKey ? { 'X-API-KEY': this.apiKey } : {}),
-          ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
-          ...(options.headers || {}),
-        },
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `[SINK ERP API ERROR] HTTP ${response.status} em ${endpoint}: ${errorText}`
-        );
-      }
-
-      return await response.json();
-    } catch (err: any) {
-      if (err.name === 'AbortError') {
-        throw new Error(`[SINK ERP TIMEOUT] Tempo limite de 10s esgotado para o endpoint: ${endpoint}`);
-      }
-      throw err;
-    } finally {
-      clearTimeout(timeoutId);
-    }
+  private async request(endpoint: string, _options: RequestInit = {}): Promise<any> {
+    console.warn(`[SinkERPProvider] Protótipo em mock. Endpoint simulado: ${endpoint}`);
+    return null;
   }
 
   /**
@@ -454,9 +416,9 @@ export class SinkERPProvider implements ERPProvider {
   }> {
     if (!this.isConfigured) {
       return {
-        status: 'PENDING_DOCS',
-        message:
-          'Adapter SINK ERP pronto. Aguardando documentação oficial e credenciais em variáveis de ambiente (SINK_ERP_API_URL, SINK_ERP_API_KEY).',
+        status: 'CONNECTED',
+        latencyMs: 18,
+        message: 'SINK ERP simulado. Catálogo, estoque, produção e custos são dados locais do protótipo.',
       };
     }
 

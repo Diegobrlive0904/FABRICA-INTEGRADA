@@ -78,36 +78,7 @@ export class TrayAdapter {
    * POST /auth com consumer_key, consumer_secret e code
    */
   public async authenticate(): Promise<string> {
-    if (this.accessToken && Date.now() < this.tokenExpiresAt - 60000) {
-      return this.accessToken;
-    }
-
-    if (!this.consumerKey || !this.consumerSecret) {
-      console.warn('[TrayAdapter] Credenciais TRAY_CONSUMER_KEY/SECRET não configuradas em ambiente.');
-      return 'MOCK_TRAY_ACCESS_TOKEN';
-    }
-
-    const endpoint = `${this.apiUrl}/auth`;
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        consumer_key: this.consumerKey,
-        consumer_secret: this.consumerSecret,
-        code: this.code,
-      }),
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Falha na autenticação da API Tray: ${response.status} - ${errText}`);
-    }
-
-    const data = await response.json();
-    this.accessToken = data.access_token;
-    // Expira em data.date_expiration_access_token ou 3 horas
-    this.tokenExpiresAt = Date.now() + (data.expires_in ? data.expires_in * 1000 : 3600000 * 3);
-    return this.accessToken!;
+    return 'MOCK_TRAY_ACCESS_TOKEN';
   }
 
   /**
@@ -115,24 +86,8 @@ export class TrayAdapter {
    * GET /orders/{order_id}/complete
    */
   public async getOrderDetails(orderId: string | number): Promise<TrayOrderDetailsDTO> {
-    const token = await this.authenticate();
-
-    // Se estiver em ambiente sem credenciais reais da Tray, retorna estrutura de DTO padrão
-    if (token === 'MOCK_TRAY_ACCESS_TOKEN') {
-      return this.buildStandardOrderMock(orderId);
-    }
-
-    const endpoint = `${this.apiUrl}/orders/${orderId}/complete?access_token=${token}`;
-    const response = await fetch(endpoint, {
-      headers: { Accept: 'application/json' },
-    });
-
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(`Erro ao consultar pedido Tray #${orderId}: ${response.status} - ${err}`);
-    }
-
-    return await response.json();
+    await this.authenticate();
+    return this.buildStandardOrderMock(orderId);
   }
 
   /**

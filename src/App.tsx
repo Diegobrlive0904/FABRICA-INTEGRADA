@@ -73,6 +73,36 @@ export default function App() {
     setSubFilter(filter);
   };
 
+  const renderSection = (tab: NavTab) => {
+    if (tab === 'orders') {
+      return (
+        <OrdersView
+          orders={orders}
+          onRefresh={fetchGlobalData}
+          onOpenShippingLabel={handleOpenShippingLabel}
+          initialFilter={subFilter}
+        />
+      );
+    }
+    if (tab === 'inventory') return <InventoryView onRefreshGlobal={fetchGlobalData} />;
+    if (tab === 'suppliers') return <SuppliersView onRefreshGlobal={fetchGlobalData} />;
+    if (tab === 'customers') return <CustomersView />;
+    if (tab === 'financial') return <FinancialView initialStatusFilter={subFilter} />;
+    if (tab === 'logistics') {
+      return (
+        <ShippingView
+          onOpenTraceSearch={handleOpenTraceSearch}
+          openLabelOrderId={openLabelOrderId}
+          onClearOpenLabelOrderId={() => setOpenLabelOrderId(null)}
+        />
+      );
+    }
+    if (tab === 'alerts') return <AlertsView initialSeverityFilter={subFilter} />;
+    if (tab === 'integrations') return <IntegrationsView />;
+    if (tab === 'audit') return <AuditView />;
+    return null;
+  };
+
   const handleOpenShippingLabel = (orderId: string) => {
     setCurrentTab('logistics');
     setOpenLabelOrderId(orderId);
@@ -100,44 +130,9 @@ export default function App() {
 
       {/* Conteúdo Principal */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {currentTab === 'dashboard' && (
-          <DashboardView
-            metrics={metrics}
-            onNavigateTab={handleNavigateTab}
-            onRefresh={fetchGlobalData}
-          />
-        )}
+        {currentTab === 'dashboard' && <DashboardView onNavigateTab={handleNavigateTab} />}
 
-        {currentTab === 'orders' && (
-          <OrdersView
-            orders={orders}
-            onRefresh={fetchGlobalData}
-            onOpenShippingLabel={handleOpenShippingLabel}
-            initialFilter={subFilter}
-          />
-        )}
-
-        {currentTab === 'inventory' && <InventoryView onRefreshGlobal={fetchGlobalData} />}
-
-        {currentTab === 'suppliers' && <SuppliersView onRefreshGlobal={fetchGlobalData} />}
-
-        {currentTab === 'customers' && <CustomersView />}
-
-        {currentTab === 'financial' && <FinancialView initialStatusFilter={subFilter} />}
-
-        {currentTab === 'logistics' && (
-          <ShippingView
-            onOpenTraceSearch={handleOpenTraceSearch}
-            openLabelOrderId={openLabelOrderId}
-            onClearOpenLabelOrderId={() => setOpenLabelOrderId(null)}
-          />
-        )}
-
-        {currentTab === 'alerts' && <AlertsView initialSeverityFilter={subFilter} />}
-
-        {currentTab === 'integrations' && <IntegrationsView />}
-
-        {currentTab === 'audit' && <AuditView />}
+        {currentTab !== 'dashboard' && renderSection(currentTab)}
       </main>
 
       {/* Modal de Rastreabilidade Autorizada (/trace/:token) */}

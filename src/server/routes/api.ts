@@ -1519,11 +1519,11 @@ apiRouter.post('/integrations/whatsapp/config', (req: Request, res: Response) =>
 });
 
 apiRouter.post('/integrations/whatsapp/send-test', async (req: Request, res: Response) => {
-  const { toPhone, templateName, customerName, documentNumber, amount, dueDate, paymentData, mode } = req.body;
+  const { toPhone, templateName, customerName, documentNumber, amount, dueDate, paymentData } = req.body;
   const result = await whatsappProvider.sendTemplateMessage({
     toPhone: toPhone || '+55 11 98888-7777',
     templateName: templateName || 'lembrete_fatura_vencimento',
-    mode: mode || (whatsappProvider.isConfigured() ? 'meta' : 'sandbox'),
+    mode: 'sandbox',
     parameters: {
       cliente: customerName || 'Hospital São Camilo - CAF',
       numero: documentNumber || 'DUP-4821-01',

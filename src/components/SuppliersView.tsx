@@ -3101,16 +3101,20 @@ export const SuppliersView: React.FC<SuppliersViewProps> = ({ onRefreshGlobal })
               >
                 Fechar
               </button>
-              <a
-                href={`https://wa.me/${(whatsappSupplier.whatsapp || whatsappSupplier.phone).replace(/\D/g, '')}?text=${encodeURIComponent(whatsappCustomMsg)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setWhatsappModalOpen(false)}
+              <button
+                type="button"
+                onClick={() => {
+                  setWhatsappModalOpen(false);
+                  setNotification({
+                    type: 'success',
+                    message: `Mensagem simulada para ${whatsappSupplier.tradeName || whatsappSupplier.name}. Nada saiu do protótipo.`,
+                  });
+                }}
                 className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center space-x-1.5 shadow-xs"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>Abrir no WhatsApp</span>
-              </a>
+                <span>Simular envio</span>
+              </button>
             </div>
           </div>
         </div>

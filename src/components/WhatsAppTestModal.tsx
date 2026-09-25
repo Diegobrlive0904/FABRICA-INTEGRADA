@@ -157,14 +157,8 @@ export const WhatsAppTestModal: React.FC<WhatsAppTestModalProps> = ({
         }),
       });
 
-      // Abrir no WhatsApp Web / App
-      const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(
-        renderedText
-      )}`;
-      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-
       setSuccessMessage(
-        `Disparo acionado com sucesso para o WhatsApp +${cleanPhone}! A janela do WhatsApp foi aberta com a mensagem pronta.`
+        `Disparo simulado para +${cleanPhone}. A mensagem ficou no protótipo e não foi enviada.`
       );
       if (onSuccess) onSuccess();
     } catch (err: any) {
@@ -214,7 +208,7 @@ export const WhatsAppTestModal: React.FC<WhatsAppTestModalProps> = ({
       } else {
         setLastMessageId(data.providerMessageId);
         setSuccessMessage(
-          `Mensagem disparada com sucesso via Meta Cloud API! ID da Meta: ${data.providerMessageId}`
+          `Disparo simulado no protótipo. ID local: ${data.providerMessageId}`
         );
         if (onSuccess) onSuccess();
       }
