@@ -114,7 +114,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100/70 text-slate-900 flex flex-col font-sans antialiased">
+    <div className="min-h-screen bg-slate-100/70 text-slate-900 flex flex-col font-sans antialiased overflow-x-hidden">
       {/* Barra de Navegação Superior */}
       <Navbar
         currentTab={currentTab}
@@ -129,7 +129,7 @@ export default function App() {
       />
 
       {/* Conteúdo Principal */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 max-w-7xl w-full min-w-0 mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
         {currentTab === 'dashboard' && <DashboardView onNavigateTab={handleNavigateTab} />}
 
         {currentTab !== 'dashboard' && renderSection(currentTab)}

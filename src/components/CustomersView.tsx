@@ -444,7 +444,7 @@ export const CustomersView: React.FC = () => {
       {/* Layout Split: Lista de Clientes à esquerda / Endereços e Regras à direita */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Coluna 1: Lista de Clientes */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden flex flex-col h-[750px]">
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden flex flex-col h-[70vh] lg:h-[750px]">
           {/* Topo da Lista */}
           <div className="p-4 border-b border-slate-200 bg-slate-50 space-y-3">
             <div className="flex items-center justify-between">
